@@ -4,15 +4,42 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from './AuthProvider';
+import { ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache } from '@apollo/client';
+import { auth } from './firebaseSetup';
+
+const getAccessToken = async (uri: string, options: any) => {
+  const token = await auth.currentUser?.getIdToken()
+
+  options.headers = {
+    ...options.headers,
+    authorization: `Bearer ${token}`,
+  };
+
+  return fetch(uri, options);
+};
+
+const httpLink = new HttpLink({
+  fetch: getAccessToken,
+  uri: 'https://localhost:7253/graphql',
+});
+
+const apolloClient = new ApolloClient({
+  link: from([
+    httpLink
+  ]),
+  cache: new InMemoryCache()
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-        <App />
-    </AuthProvider>
+    <ApolloProvider client={apolloClient}>
+      <AuthProvider>
+          <App />
+      </AuthProvider>
+    </ApolloProvider>
   </React.StrictMode>
 );
 
