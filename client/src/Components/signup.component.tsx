@@ -15,10 +15,6 @@ export default function Signup(props: loginProps){
         props.setLoginState({...props.loginState,[fieldId]:value})
     }
 
-    const handleSubmit=(e: any)=>{
-        e.preventDefault();
-    }
-
     return(
         <form className="mt-8 space-y-6">
             <div className="-space-y-px">
