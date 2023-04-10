@@ -1,8 +1,8 @@
 export interface WorkspaceResponse {
-    data: Data;
+    data: WorkspaceResponseData;
 }
 
-export interface Data {
+export interface WorkspaceResponseData {
     workspacesForUser: WorkspacesForUser[];
 }
 

@@ -1,4 +1,6 @@
 import { GetWorkspaces } from "../../Apis/workspace";
+import Card from "../../Components/card-component";
+import { LoadingComponent } from "../../Components/loading-component";
 import Navbar from "../../Components/navbar";
 
 export default function HomePage()
@@ -8,7 +10,7 @@ export default function HomePage()
     if (loading)
     {
         return (
-            <div>Loading...</div>
+            <LoadingComponent/>
         )
     }
 
@@ -19,11 +21,26 @@ export default function HomePage()
         )
     }
 
-    console.log(data)
+    if (data)
+    {
+        console.log(data.workspacesForUser[0].name)
+    }
+
+    const renderRow = () => {
+        return (
+            <div>
+                {data?.workspacesForUser.map((entry) => 
+                    <div>
+                        <Card title={entry.name} description="test"></Card>
+                    </div>
+                )}
+            </div>
+        )
+    }
+
     return (
         <div>
-            <Navbar></Navbar>
-            Home Page!
+            {renderRow()}
         </div>
     )
 }

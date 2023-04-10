@@ -7,6 +7,7 @@ import LoginPage from './Pages/Login/login.page';
 import SignupPage from './Pages/Login/signup.page';
 import { AuthProvider } from './AuthProvider';
 import { PrivateRoute } from './PrivateRoute';
+import WorkspaceHomePage from './Pages/Workspace/workspace.home.page';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
                         <Route path="/login" element={<LoginPage/>} />
                         <Route path="/signup" element={<SignupPage/>} />
                         <Route path="/home" element={<PrivateRoute><HomePage/></PrivateRoute>} />
+                        <Route path="/workspace/:id" element={<PrivateRoute><WorkspaceHomePage/></PrivateRoute>} />
                     </Routes>
                 </AuthProvider> 
             </BrowserRouter>

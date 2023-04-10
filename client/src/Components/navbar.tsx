@@ -1,7 +1,10 @@
 import Avatar from "react-avatar";
+import { auth } from "../firebaseSetup";
 
 export default function Navbar()
 {
+    const name = auth.currentUser?.email
+
     return (
         <div>
         <nav
@@ -45,30 +48,7 @@ export default function Navbar()
             <ul
                 className="list-style-none mr-auto flex flex-col pl-0 lg:flex-row"
                 data-te-navbar-nav-ref>
-                <li className="lg:pr-2" data-te-nav-item-ref>
-                <a
-                    className="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
-                    href="#"
-                    data-te-nav-link-ref
-                    >Dashboard</a
-                >
-                </li>
-                <li className="lg:pr-2" data-te-nav-item-ref>
-                <a
-                    className="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
-                    href="#"
-                    data-te-nav-link-ref
-                    >Team</a
-                >
-                </li>
-                <li className="lg:pr-2" data-te-nav-item-ref>
-                <a
-                    className="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
-                    href="#"
-                    data-te-nav-link-ref
-                    >Projects</a
-                >
-                </li>
+                <h2>Home</h2>
             </ul>
             </div>
 
@@ -152,7 +132,7 @@ export default function Navbar()
                 role="button"
                 data-te-dropdown-toggle-ref
                 aria-expanded="false">
-                <Avatar className="rounded-full" round={true} name={"Jim Bob"}/>
+                <Avatar className="rounded-full" round={true} name={name!}/>
                 </a>
                 <ul
                 className="absolute left-auto right-0 z-[1000] float-left m-0 mt-1 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700 [&[data-te-dropdown-show]]:block"

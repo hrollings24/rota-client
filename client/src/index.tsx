@@ -36,9 +36,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ApolloProvider client={apolloClient}>
-      <AuthProvider>
-          <App />
-      </AuthProvider>
+      <App />
     </ApolloProvider>
   </React.StrictMode>
 );

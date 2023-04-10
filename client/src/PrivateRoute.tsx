@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom'
 import { LoadingComponent } from './Components/loading-component';
+import Navbar from './Components/navbar';
 
 export interface IAuthRouteProps {
     children: any
@@ -26,5 +27,10 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
 
     if (loading) return <div><LoadingComponent/></div>
     
-    return <div>{children}</div>
+    return (
+        <div>
+            <Navbar></Navbar>
+            {children}
+        </div>
+    )
 }
