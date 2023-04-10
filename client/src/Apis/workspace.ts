@@ -14,29 +14,6 @@ const GET_WORKSPACES = gql`
     }
 `
 
-const GET_WORKSPACES_FILTER = gql`
-query($urlFilter: String){
-    workspaces(where: {
-      url: {
-        contains: $urlFilter
-      }
-    }) {
-      name,
-      id,
-      url
-    }
-  }
-`;
-
-
 export function GetWorkspaces() {
     return useQuery<WorkspaceResponseData>(GET_WORKSPACES)
-}
-
-export function GetWorkspaceByUrl(url: string) {
-    return useQuery<WorkspaceResponseData>(GET_WORKSPACES_FILTER, {
-        variables: {
-            urlFilter: url,
-        },
-    });
 }

@@ -21,11 +21,6 @@ export default function HomePage()
         )
     }
 
-    if (data)
-    {
-        console.log(data.workspacesForUser[0].name)
-    }
-
     const renderRow = () => {
         return (
             <div>

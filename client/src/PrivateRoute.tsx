@@ -4,8 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { LoadingComponent } from './Components/loading-component';
 import Navbar from './Components/navbar';
 import { WorkspaceResponseData, WorkspaceSearchResponseData, WorkspacesForUser } from './Types/Workspace';
-import { GetWorkspaceByUrl } from './Apis/workspace';
-import { gql, useLazyQuery } from '@apollo/client';
+import { gql, useLazyQuery, useQuery } from '@apollo/client';
 
 const GET_WORKSPACES_FILTER = gql`
 query($urlFilter: String){
@@ -15,7 +14,6 @@ query($urlFilter: String){
       }
     }) {
       name,
-      id,
       url
     }
   }
@@ -42,9 +40,9 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
         variables: {
             urlFilter: location.pathname.split('/').pop()!.toLowerCase(),
         },
-        fetchPolicy: 'network-only',
         onCompleted: (d) => workspaceLoaded(d)
       });
+
 
     const workspaceLoaded = (workspaceParam: WorkspaceSearchResponseData) => {
         setWorkspace(workspaceParam.workspaces[0])
@@ -59,9 +57,10 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
 
             if (isWorkspace && !called)
             {
+                console.log("getting workspace")
                 getWorkspace()
             }
-            else
+            else if (!isWorkspace)
             {
                 setLoading(false)
             }

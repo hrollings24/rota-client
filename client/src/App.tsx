@@ -16,11 +16,11 @@ function App() {
             <BrowserRouter>
                 <AuthProvider> 
                     <Routes>
-                        <Route path="/" element={<PrivateRoute><HomePage/></PrivateRoute>} />
+                        <Route path="/" element={<PrivateRoute key={1}><HomePage/></PrivateRoute>} />
                         <Route path="/login" element={<LoginPage/>} />
                         <Route path="/signup" element={<SignupPage/>} />
-                        <Route path="/home" element={<PrivateRoute><HomePage/></PrivateRoute>} />
-                        <Route path="/workspace/:id" element={<PrivateRoute><WorkspaceHomePage/></PrivateRoute>} />
+                        <Route path="/home" element={<PrivateRoute key={2}><HomePage/></PrivateRoute>} />
+                        <Route path="/workspace/:id" element={<PrivateRoute key={3}><WorkspaceHomePage/></PrivateRoute>} />
                     </Routes>
                 </AuthProvider> 
             </BrowserRouter>
