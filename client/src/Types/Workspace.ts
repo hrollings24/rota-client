@@ -1,12 +1,14 @@
-export interface WorkspaceResponse {
-    data: WorkspaceResponseData;
-}
 
 export interface WorkspaceResponseData {
     workspacesForUser: WorkspacesForUser[];
 }
 
+export interface WorkspaceSearchResponseData {
+    workspaces: WorkspacesForUser[];
+}
+
 export interface WorkspacesForUser {
-    id:   string;
+    id: string;
     name: string;
+    url: string;
 }

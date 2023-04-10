@@ -1,9 +1,33 @@
+import { useEffect } from "react";
 import Avatar from "react-avatar";
+import { useLocation } from "react-router-dom";
 import { auth } from "../firebaseSetup";
+import { WorkspacesForUser } from "../Types/Workspace";
 
-export default function Navbar()
+export default function Navbar({ workspace }: {workspace:  WorkspacesForUser | null })
 {
     const name = auth.currentUser?.email
+    const location = useLocation();
+
+    const getName = () => {
+        if (workspace == null)
+        {
+            return toTitleCase(location.pathname.split('/').pop()!)
+        }
+        else
+        {
+            return toTitleCase(workspace.name)
+        }
+    }
+
+    function toTitleCase(str: string) {
+        return str.replace(
+          /\w\S*/g,
+          function(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+          }
+        );
+      }
 
     return (
         <div>
@@ -48,7 +72,7 @@ export default function Navbar()
             <ul
                 className="list-style-none mr-auto flex flex-col pl-0 lg:flex-row"
                 data-te-navbar-nav-ref>
-                <h2>Home</h2>
+                <h2>{getName()}</h2>
             </ul>
             </div>
 

@@ -31,7 +31,7 @@ export default function HomePage()
             <div>
                 {data?.workspacesForUser.map((entry) => 
                     <div>
-                        <Card title={entry.name} description="test"></Card>
+                        <Card title={entry.name} description="test" url={entry.url}></Card>
                     </div>
                 )}
             </div>
