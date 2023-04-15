@@ -1,7 +1,6 @@
 import { GetWorkspaces } from "../../Apis/workspace";
-import Card from "../../Components/card-component";
+import Card from "./Components/card-component";
 import { LoadingComponent } from "../../Components/loading-component";
-import Navbar from "../../Components/navbar";
 
 export default function HomePage()
 {

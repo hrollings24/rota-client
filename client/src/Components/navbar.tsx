@@ -1,8 +1,9 @@
+import { Cog6ToothIcon, Cog8ToothIcon } from "@heroicons/react/24/solid";
 import { useEffect } from "react";
-import Avatar from "react-avatar";
 import { useLocation } from "react-router-dom";
 import { auth } from "../firebaseSetup";
 import { WorkspacesForUser } from "../Types/Workspace";
+import AvatarComponent from "./avatar-component";
 
 export default function Navbar({ workspace }: {workspace:  WorkspacesForUser | null })
 {
@@ -72,7 +73,7 @@ export default function Navbar({ workspace }: {workspace:  WorkspacesForUser | n
             <ul
                 className="list-style-none mr-auto flex flex-col pl-0 lg:flex-row"
                 data-te-navbar-nav-ref>
-                <h2>{getName()}</h2>
+                <h2 style={{fontWeight: "bold"}}>{getName()}</h2>
             </ul>
             </div>
 
@@ -81,14 +82,7 @@ export default function Navbar({ workspace }: {workspace:  WorkspacesForUser | n
                 className="mr-4 text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
                 href="#">
                 <span className="[&>svg]:w-5">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="h-5 w-5">
-                    <path
-                    d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
-                </svg>
+                <Cog8ToothIcon className="text-gray-600"></Cog8ToothIcon>
                 </span>
             </a>
 
@@ -156,7 +150,7 @@ export default function Navbar({ workspace }: {workspace:  WorkspacesForUser | n
                 role="button"
                 data-te-dropdown-toggle-ref
                 aria-expanded="false">
-                <Avatar className="rounded-full" round={true} name={name!}/>
+                <AvatarComponent url={name!}/>
                 </a>
                 <ul
                 className="absolute left-auto right-0 z-[1000] float-left m-0 mt-1 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700 [&[data-te-dropdown-show]]:block"
