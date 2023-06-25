@@ -4,8 +4,9 @@ import { useLocation } from "react-router-dom";
 import { auth } from "../firebaseSetup";
 import { WorkspacesForUser } from "../Types/Workspace";
 import AvatarComponent from "./avatar-component";
+import { Account } from "../Types/Account";
 
-export default function Navbar({ workspace }: {workspace:  WorkspacesForUser | null })
+export default function Navbar({ workspace, account }: { workspace: WorkspacesForUser | null, account: Account | null })
 {
     const name = auth.currentUser?.email
     const location = useLocation();
@@ -21,14 +22,12 @@ export default function Navbar({ workspace }: {workspace:  WorkspacesForUser | n
         }
     }
 
-    function toTitleCase(str: string) {
+    const toTitleCase = (str: string) => {
         return str.replace(
           /\w\S*/g,
-          function(txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-          }
+          (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
         );
-      }
+    }
 
     return (
         <div>
@@ -108,7 +107,7 @@ export default function Navbar({ workspace }: {workspace:  WorkspacesForUser | n
                 </span>
                 <span
                     className="absolute -mt-2.5 ml-2 rounded-full bg-red-700 px-1.5 py-0 text-xs text-white"
-                    >1</span
+                    >{account?.notifications?.length ?? null}</span
                 >
                 </a>
                 <ul
