@@ -7,7 +7,7 @@ import Navbar from './Components/navbar';
 import { WorkspaceResponseData, WorkspaceSearchResponseData, WorkspacesForUser } from './Types/Workspace';
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { get } from 'http';
-import { Account } from './Types/Account';
+import { Account, AccountResponseData } from './Types/Account';
 
 const GET_WORKSPACES_FILTER = gql`
 query($urlFilter: String){
@@ -50,7 +50,7 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
   const [isLoading, setLoading] = useState(true);
   const location = useLocation();
   const [workspace, setWorkspace] = useState<WorkspacesForUser | null>(null);
-  const [accountData, setAccountData] = useState<Account | null>(null);
+  const [accountData, setAccountData] = useState<AccountResponseData | null>(null);
 
   const [
     getWorkspace,
@@ -105,7 +105,7 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
 
   return (
     <div>
-      <Navbar workspace={workspace} account={accountData}></Navbar>      
+      <Navbar workspace={workspace} account={accountData!.account}></Navbar>      
       {children}
     </div>
   );

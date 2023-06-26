@@ -6,7 +6,7 @@ import { WorkspacesForUser } from "../Types/Workspace";
 import AvatarComponent from "./avatar-component";
 import { Account } from "../Types/Account";
 
-export default function Navbar({ workspace, account }: { workspace: WorkspacesForUser | null, account: Account | null })
+export default function Navbar({ workspace, account }: { workspace: WorkspacesForUser | null, account: Account })
 {
     const name = auth.currentUser?.email
     const location = useLocation();
@@ -149,7 +149,7 @@ export default function Navbar({ workspace, account }: { workspace: WorkspacesFo
                 role="button"
                 data-te-dropdown-toggle-ref
                 aria-expanded="false">
-                <AvatarComponent url={name!}/>
+                <AvatarComponent url={""} initials={account?.firstName?.charAt(0) + account?.surname.charAt(0)}/>
                 </a>
                 <ul
                 className="absolute left-auto right-0 z-[1000] float-left m-0 mt-1 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700 [&[data-te-dropdown-show]]:block"

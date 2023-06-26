@@ -1,9 +1,5 @@
 
-export interface Root {
-    data: Data
-}
-  
-export interface Data {
+export interface AccountResponseData {
     account: Account
 }
 
