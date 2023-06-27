@@ -79,7 +79,6 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
         getAccount();
 
         if (isWorkspace && !workspaceCalled) {
-          console.log('getting workspace');
           getWorkspace({
             variables: {
               urlFilter: location.pathname.split('/').pop()?.toLowerCase(),
@@ -99,7 +98,7 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
     };
   }, [auth, getWorkspace, location.pathname, navigate, workspaceCalled]);
 
-  if (isLoading || accountLoading) {
+  if (isLoading || accountLoading || accountData == null) {
     return <div><LoadingComponent /></div>;
   }
 

@@ -1,6 +1,6 @@
 import { Cog6ToothIcon, Cog8ToothIcon } from "@heroicons/react/24/solid";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../firebaseSetup";
 import { WorkspacesForUser } from "../Types/Workspace";
 import AvatarComponent from "./avatar-component";
@@ -10,6 +10,7 @@ export default function Navbar({ workspace, account }: { workspace: WorkspacesFo
 {
     const name = auth.currentUser?.email
     const location = useLocation();
+    const navigate = useNavigate();
 
     const getName = () => {
         if (workspace == null)
@@ -22,11 +23,28 @@ export default function Navbar({ workspace, account }: { workspace: WorkspacesFo
         }
     }
 
+    const goToAccount = () => {
+        navigate('/account')
+    }
+
     const toTitleCase = (str: string) => {
         return str.replace(
           /\w\S*/g,
           (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
         );
+    }
+
+    //create a function to return the account.notification count
+    //if it is more than 1, return the  number, else return null
+    const getNotificationCount = () => {
+        if (account?.notifications?.length > 0)
+        {
+            return account.notifications.length
+        }
+        else
+        {
+            return null
+        }
     }
 
     return (
@@ -107,7 +125,7 @@ export default function Navbar({ workspace, account }: { workspace: WorkspacesFo
                 </span>
                 <span
                     className="absolute -mt-2.5 ml-2 rounded-full bg-red-700 px-1.5 py-0 text-xs text-white"
-                    >{account?.notifications?.length ?? null}</span
+                    >{getNotificationCount()}</span
                 >
                 </a>
                 <ul
@@ -142,45 +160,18 @@ export default function Navbar({ workspace, account }: { workspace: WorkspacesFo
             </div>
 
             <div className="relative" data-te-dropdown-ref>
-                <a
+            <div className="relative" data-te-dropdown-ref>
+            <button
                 className="hidden-arrow flex items-center whitespace-nowrap transition duration-150 ease-in-out motion-reduce:transition-none"
-                href="#"
                 id="dropdownMenuButton2"
-                role="button"
+                onClick={() => goToAccount()}
                 data-te-dropdown-toggle-ref
-                aria-expanded="false">
-                <AvatarComponent url={""} initials={account?.firstName?.charAt(0) + account?.surname.charAt(0)}/>
-                </a>
-                <ul
-                className="absolute left-auto right-0 z-[1000] float-left m-0 mt-1 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700 [&[data-te-dropdown-show]]:block"
-                aria-labelledby="dropdownMenuButton2"
-                data-te-dropdown-menu-ref>
-                <li>
-                    <a
-                    className="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
-                    href="#"
-                    data-te-dropdown-item-ref
-                    >Action</a
-                    >
-                </li>
-                <li>
-                    <a
-                    className="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
-                    href="#"
-                    data-te-dropdown-item-ref
-                    >Another action</a
-                    >
-                </li>
-                <li>
-                    <a
-                    className="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
-                    href="#"
-                    data-te-dropdown-item-ref
-                    >Something else here</a
-                    >
-                </li>
-                </ul>
+                aria-expanded="false"
+            >
+                <AvatarComponent url={""} initials={account?.firstName?.charAt(0) + account?.surname.charAt(0)} />
+            </button>
             </div>
+        </div>
             </div>
         </div>
         </nav>

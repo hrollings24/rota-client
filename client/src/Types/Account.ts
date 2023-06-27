@@ -9,5 +9,6 @@ export interface Account {
     firstName: string
     surname: string
     notifications: any[]
+    profilePictureUrl: string
   }
   
