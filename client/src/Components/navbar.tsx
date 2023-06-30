@@ -2,11 +2,11 @@ import { Cog6ToothIcon, Cog8ToothIcon } from "@heroicons/react/24/solid";
 import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../firebaseSetup";
-import { WorkspacesForUser } from "../Types/Workspace";
+import { WorkspaceResponse, WorkspacesForUser } from "../Types/Workspace";
 import AvatarComponent from "./avatar-component";
 import { Account } from "../Types/Account";
 
-export default function Navbar({ workspace, account }: { workspace: WorkspacesForUser | null, account: Account }) {
+export default function Navbar({ workspace, account }: { workspace: WorkspaceResponse | null, account: Account }) {
   const name = auth.currentUser?.email;
   const location = useLocation();
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function Navbar({ workspace, account }: { workspace: WorkspacesFo
     if (workspace == null) {
       return toTitleCase(location.pathname.split('/').pop()!);
     } else {
-      return toTitleCase(workspace.name);
+      return toTitleCase("Test Workspace"/*workspace.name*/);
     }
   };
 

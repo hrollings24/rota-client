@@ -9,6 +9,7 @@ import { AuthProvider } from './AuthProvider';
 import { PrivateRoute } from './PrivateRoute';
 import WorkspaceHomePage from './Pages/Workspace/workspace.home.page';
 import AccountSettingsPage from './Pages/Account/account.settings.page';
+import { WorkspaceRoute } from './WorkspaceRoute';
 
 
 function App() {
@@ -22,7 +23,11 @@ function App() {
                         <Route path="/signup" element={<SignupPage/>} />
                         <Route path="/home" element={<PrivateRoute key={2}><HomePage/></PrivateRoute>} />
                         <Route path="/account" element={<PrivateRoute key={2}><AccountSettingsPage/></PrivateRoute>} />
-                        <Route path="/workspace/:id" element={<PrivateRoute key={3}><WorkspaceHomePage/></PrivateRoute>} />
+                        <Route path="/workspace/:id" element={<WorkspaceRoute>{(workspace) => (
+                            <div>
+                            <WorkspaceHomePage workspace={workspace} />
+                            </div>
+                        )}</WorkspaceRoute>} />
                     </Routes>
                 </AuthProvider> 
             </BrowserRouter>

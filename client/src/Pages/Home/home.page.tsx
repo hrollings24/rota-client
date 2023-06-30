@@ -22,15 +22,15 @@ export default function HomePage()
 
     const renderRow = () => {
         return (
-            <div>
-                {data?.workspacesForUser.map((entry) => 
-                    <div>
-                        <Card title={entry.name} description="test" url={entry.url}></Card>
-                    </div>
-                )}
-            </div>
-        )
-    }
+          <div className="pt-6">
+            {data?.workspacesForUser.map((entry) => (
+              <div key={entry.id} className="mb-6">
+                <Card title={entry.name} description="test" url={entry.id} />
+              </div>
+            ))}
+          </div>
+        );
+      };
 
     return (
         <div>

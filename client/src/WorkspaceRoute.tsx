@@ -43,11 +43,11 @@ query {
 `;
 
 
-export interface IAuthRouteProps {
-    children: any
+export interface IWorkspaceRouteProps {
+    children: (workspace: WorkspaceResponse) => React.ReactNode;
 }
 
-export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
+export const WorkspaceRoute: React.FC<IWorkspaceRouteProps> = ({ children }) => {
   const auth = getAuth();
   const navigate = useNavigate();
   const [isLoading, setLoading] = useState(true);
@@ -66,9 +66,7 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
 
   const workspaceLoaded = (workspaceParam: WorkspaceResponse) => {
     setLoading(false);
-    console.log(workspaceParam)
     setWorkspace(workspaceParam);
-    console.log(workspace)
   };
 
   const [
@@ -106,14 +104,14 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
     return () => unsubscribe();
   }, [location.pathname, workspaceCalled, getAccount, getWorkspace, navigate]);
 
-  if (isLoading || accountLoading || accountData == null) {
+  if (isLoading || accountLoading || accountData == null || workspace == null) {
     return <div><LoadingComponent /></div>;
   }
 
   return (
     <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
       <Navbar workspace={workspace} account={accountData!.account}></Navbar>      
-      {children}
+      {children(workspace!)}
     </div>
   );
 };
