@@ -7,10 +7,10 @@ import LoginPage from './Pages/Login/login.page';
 import SignupPage from './Pages/Login/signup.page';
 import { AuthProvider } from './AuthProvider';
 import { PrivateRoute } from './PrivateRoute';
-import WorkspaceHomePage from './Pages/Workspace/workspace.home.page';
 import AccountSettingsPage from './Pages/Account/account.settings.page';
 import { WorkspaceRoute } from './WorkspaceRoute';
 import CreateWorkspacePage from './Pages/Workspace/createworkspace.page';
+import WorkspaceParentPage from './Pages/Workspace/workspace.parent.page';
 
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
                         <Route path="/workspace/create" element={<PrivateRoute key={2}><CreateWorkspacePage/></PrivateRoute>} />
                         <Route path="/workspace/:id" element={<WorkspaceRoute>{(workspace) => (
                             <div>
-                            <WorkspaceHomePage workspace={workspace} />
+                            <WorkspaceParentPage workspace={workspace} />
                             </div>
                         )}</WorkspaceRoute>} />
                     </Routes>

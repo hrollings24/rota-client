@@ -10,9 +10,6 @@ export interface WorkspacesForUser {
     url: string;
 }
 
-
-//something is up with these models 
-
 export interface WorkspaceResponse {
     workspace: Workspace;
 }
@@ -24,10 +21,11 @@ export interface Workspace {
 }
 
 export interface User {
-    id: string;
+    accountId: string;
     username: string;
     firstName: string;
     surname: string;
+    role: string;
 }
 
 export interface Department {

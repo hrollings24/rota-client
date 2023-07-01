@@ -15,7 +15,8 @@ query {
     id,
     users {
       accountId,
-      username
+      username,
+      role
     },
     departments {
       id,
