@@ -50,12 +50,8 @@ export interface IAuthRouteProps {
 export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
   const auth = getAuth();
   const navigate = useNavigate();
-  const [isLoading, setLoading] = useState(true);
   const location = useLocation();
-  const [workspace, setWorkspace] = useState<WorkspaceResponse | null>(null);
   const [accountData, setAccountData] = useState<AccountResponseData | null>(null);
-
- 
 
   const [
     getAccount,
@@ -64,25 +60,6 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
     onCompleted: (data) => setAccountData(data),
   });
 
-  const workspaceLoaded = (workspaceParam: WorkspaceResponse) => {
-    setLoading(false);
-    console.log(workspaceParam)
-    setWorkspace(workspaceParam);
-    console.log(workspace)
-  };
-
-  const [
-    getWorkspace,
-    { called: workspaceCalled, loading: workspaceLoading, data: workspaceQueryData },
-  ] = useLazyQuery(GET_WORKSPACES_FILTER, {
-    onCompleted: (data) => workspaceLoaded(data),
-    context: {
-      headers: {
-        WorkspaceId: location.pathname.split('/').pop()?.toLowerCase(),
-      },
-    },
-  });
-  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -90,12 +67,6 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
         const isWorkspace = arr.includes('workspace');
   
         getAccount();
-  
-        if (isWorkspace && !workspaceCalled) {
-          getWorkspace();
-        } else if (!isWorkspace) {
-          setLoading(false);
-        }
       } else {
         console.log('Unauthorized');
         navigate('/login');
@@ -104,15 +75,15 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
     
     // Clean up the subscription
     return () => unsubscribe();
-  }, [location.pathname, workspaceCalled, getAccount, getWorkspace, navigate]);
+  }, [location.pathname, getAccount, navigate]);
 
-  if (isLoading || accountLoading || accountData == null) {
+  if (accountLoading || accountData == null) {
     return <div><LoadingComponent /></div>;
   }
 
   return (
     <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
-      <Navbar workspace={workspace} account={accountData!.account}></Navbar>      
+      <Navbar workspace={null} account={accountData!.account}></Navbar>      
       {children}
     </div>
   );

@@ -10,6 +10,7 @@ import { PrivateRoute } from './PrivateRoute';
 import WorkspaceHomePage from './Pages/Workspace/workspace.home.page';
 import AccountSettingsPage from './Pages/Account/account.settings.page';
 import { WorkspaceRoute } from './WorkspaceRoute';
+import CreateWorkspacePage from './Pages/Workspace/createworkspace.page';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
                         <Route path="/signup" element={<SignupPage/>} />
                         <Route path="/home" element={<PrivateRoute key={2}><HomePage/></PrivateRoute>} />
                         <Route path="/account" element={<PrivateRoute key={2}><AccountSettingsPage/></PrivateRoute>} />
+                        <Route path="/workspace/create" element={<PrivateRoute key={2}><CreateWorkspacePage/></PrivateRoute>} />
                         <Route path="/workspace/:id" element={<WorkspaceRoute>{(workspace) => (
                             <div>
                             <WorkspaceHomePage workspace={workspace} />

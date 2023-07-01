@@ -5,18 +5,12 @@ import Card from "../Home/Components/card-component";
 
 export default function WorkspaceHomePage({ workspace }: { workspace: WorkspaceResponse }) {
 
-    useEffect(() => {
-        console.log(workspace);
-    }, []);
-
-    console.log(workspace);
-
     const renderRow = () => {
         return (
           <div className="pt-6">
             {workspace.workspace.departments.map((entry) => (
               <div key={entry.id} className="mb-6">
-                <Card title={entry.name} description="test" url={entry.id} />
+                <Card title={entry.name} description="test" url={entry.id} onClick={() => {}} buttonText="Go To Department"/>
               </div>
             ))}
           </div>
