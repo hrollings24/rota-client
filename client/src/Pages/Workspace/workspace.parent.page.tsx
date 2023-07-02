@@ -1,7 +1,7 @@
 import { WorkspaceResponse } from "../../Types/Workspace";
 import { auth } from "../../firebaseSetup";
-import WorkspaceAdminHomePage from "./workspace.admin.home.page";
-import WorkspaceUserPage from "./workspace.user.page";
+import WorkspaceAdminHomePage from "./admin/workspace.admin.home.page";
+import WorkspaceUserPage from "./user/workspace.user.page";
 
 export default function WorkspaceParentPage({ workspace }: { workspace: WorkspaceResponse }) {
 

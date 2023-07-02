@@ -26,6 +26,7 @@ export interface User {
     firstName: string;
     surname: string;
     role: string;
+    departmentId: string;
 }
 
 export interface Department {

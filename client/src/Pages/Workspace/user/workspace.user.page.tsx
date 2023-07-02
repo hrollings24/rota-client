@@ -1,4 +1,4 @@
-import { WorkspaceResponse } from "../../Types/Workspace";
+import { WorkspaceResponse } from "../../../Types/Workspace";
 
 export default function WorkspaceUserPage({ workspace }: { workspace: WorkspaceResponse }) {
       
