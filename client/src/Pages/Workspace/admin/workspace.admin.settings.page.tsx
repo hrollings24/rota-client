@@ -1,25 +1,57 @@
-import { useState } from "react";
-import { WorkspaceResponse, User, Department } from "../../../Types/Workspace";
+import { useEffect, useState } from "react";
+import { WorkspaceResponse, User, Department, GET_WORKSPACES_FILTER } from "../../../Types/Workspace";
 import { Modal } from "./workspace.modal";
+import { ApolloQueryResult, QueryResult, gql, useMutation, useQuery } from "@apollo/client";
 
-export default function WorkspaceSettingsPage({ workspace }: { workspace: WorkspaceResponse }) {
+const ADD_USER_TO_DEPARTMENT = gql`
+  mutation AddUserToDepartment($accountId: String!, $departmentId: UUID!) {
+    addAccountToDepartment(request: { accountId: $accountId, departmentId: $departmentId }) {
+      id
+    }
+  }
+`;
+
+export const WorkspaceSettingsPage: React.FC<{ workspace: WorkspaceResponse }> = ({ workspace }) => {
     const [showModal, setShowModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [addUserToDepartment, { loading: addUserToDepartmentLoading }] = useMutation(ADD_USER_TO_DEPARTMENT);
 
-    
   const handleChangeRole = (user: User) => {
     // Handle change role button click
     // You can implement the logic to update the user's role here
   };
 
-  const handleSelectDepartment = (departmentId: string) => {
-    // Implement the logic to update the user's department here
+  const HandleSelectDepartment = async (departmentId: string) => {
     if (selectedUser) {
-        console.log(departmentId)
-      // Update the selected user's department
+      try {
+        await addUserToDepartment({
+          variables: {
+            accountId: selectedUser.accountId,
+            departmentId: departmentId,
+          },
+          context: {
+            headers: {
+              WorkspaceId: workspace.workspace.id,
+            },
+          },
+        });
+
+        // Refetch the data after the mutation is completed
+        workspaceQueryRefetch();
+      } catch (error) {
+        // Handle the error
+        console.error('Error adding user to department:', error);
+      }
     }
   };
 
+  const { loading: workspaceQueryLoading, refetch: workspaceQueryRefetch } = useQuery(GET_WORKSPACES_FILTER, {
+    context: {
+      headers: {
+        WorkspaceId: workspace.workspace.id,
+      },
+    },
+  });
 
 
   const handleChangeDepartment = (user: User) => {
@@ -33,25 +65,14 @@ export default function WorkspaceSettingsPage({ workspace }: { workspace: Worksp
   };
 
   const renderDepartmentButton = (user: User) => {
-    if (user.departmentId) {
-      return (
-        <button
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none mr-2"
-          onClick={() => handleChangeDepartment(user)}
-        >
-          Change Department
-        </button>
-      );
-    } else {
-      return (
-        <button
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none mr-2"
-          onClick={() => handleChangeDepartment(user)}
-        >
-          Assign Department
-        </button>
-      );
-    }
+    return (
+    <button
+    className="fixed-width-button px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none mr-2"
+    onClick={() => handleChangeDepartment(user)}
+    >
+    {user.departmentId ? "Change Department" : "Assign Department"}
+    </button>
+    );
   };
 
   return (
@@ -60,7 +81,7 @@ export default function WorkspaceSettingsPage({ workspace }: { workspace: Worksp
         <Modal
           onClose={() => setShowModal(false)}
           departments={workspace.workspace.departments}
-          onSelectDepartment={handleSelectDepartment}
+          onSelectDepartment={HandleSelectDepartment}
         />
       )}
       <h1 style={{ fontWeight: "bold", color: "white" }}>Settings</h1>

@@ -1,3 +1,25 @@
+import { gql } from "@apollo/client";
+
+export const GET_WORKSPACES_FILTER = gql`
+query {
+  workspace {
+    id,
+    users {
+      accountId,
+      username,
+      role,
+      firstName,
+      surname,
+      departmentId
+    },
+    departments {
+      id,
+      name
+    },
+  }
+}
+`;
+
 
 export interface WorkspaceResponseData {
     workspacesForUser: WorkspacesForUser[];

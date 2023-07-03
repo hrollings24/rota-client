@@ -11,7 +11,7 @@ import AccountSettingsPage from './Pages/Account/account.settings.page';
 import { WorkspaceRoute } from './WorkspaceRoute';
 import CreateWorkspacePage from './Pages/Workspace/createworkspace.page';
 import WorkspaceParentPage from './Pages/Workspace/workspace.parent.page';
-import WorkspaceSettingsPage from './Pages/Workspace/admin/workspace.admin.settings.page';
+import { WorkspaceSettingsPage } from './Pages/Workspace/admin/workspace.admin.settings.page';
 
 
 function App() {

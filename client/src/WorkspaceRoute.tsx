@@ -4,30 +4,10 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom'
 import { LoadingComponent } from './Components/loading-component';
 import Navbar from './Components/navbar';
-import { WorkspaceResponse, WorkspacesForUser } from './Types/Workspace';
+import { GET_WORKSPACES_FILTER, WorkspaceResponse, WorkspacesForUser } from './Types/Workspace';
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { get } from 'http';
 import { Account, AccountResponseData } from './Types/Account';
-
-const GET_WORKSPACES_FILTER = gql`
-query {
-  workspace {
-    id,
-    users {
-      accountId,
-      username,
-      role,
-      firstName,
-      surname,
-      departmentId
-    },
-    departments {
-      id,
-      name
-    },
-  }
-}
-`;
 
 const GET_ACCOUNT_QUERY = gql`
 query {
@@ -73,6 +53,9 @@ export const WorkspaceRoute: React.FC<IWorkspaceRouteProps> = ({ children }) => 
     setWorkspace(workspaceParam);
   };
 
+  const match = location.pathname.match(/\/workspace\/([^/]+)/);
+    const workspaceId = match ? match[1].toLowerCase() : null;
+
   const [
     getWorkspace,
     { called: workspaceCalled, loading: workspaceLoading, data: workspaceQueryData },
@@ -80,7 +63,7 @@ export const WorkspaceRoute: React.FC<IWorkspaceRouteProps> = ({ children }) => 
     onCompleted: (data) => workspaceLoaded(data),
     context: {
       headers: {
-        WorkspaceId: location.pathname.split('/').pop()?.toLowerCase(),
+        WorkspaceId: workspaceId
       },
     },
   });
