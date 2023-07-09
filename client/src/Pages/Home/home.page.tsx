@@ -2,34 +2,23 @@ import { GetWorkspaces } from "../../Apis/workspace";
 import Card from "./Components/card-component";
 import { LoadingComponent } from "../../Components/loading-component";
 import { useNavigate } from "react-router-dom";
+import { AccountResponseData } from "../../Types/Account";
+import { useContext } from "react";
+import { AccountContext } from "../../AccountContext";
 
-export default function HomePage()
-{
-    const { data, error, loading } = GetWorkspaces();
+export default function HomePage() {
+  const accountData = useContext(AccountContext);
+  
     const navigate = useNavigate();
 
     const goToWorkspace = (url: string) => {
         navigate('/workspace/' + url);
       };
 
-    if (loading)
-    {
-        return (
-            <LoadingComponent/>
-        )
-    }
-
-    if (error)
-    {
-        return (
-            <div>{error.message}</div>
-        )
-    }
-
     const renderRow = () => {
         return (
           <div>
-            {data?.workspacesForUser.map((entry) => (
+            {accountData?.account.workspaces.map((entry) => (
               <div key={entry.id} className="mb-6">
                 <Card title={entry.name} description="test" url={entry.id} onClick={() => goToWorkspace(entry.id)} buttonText="Go To Workspace" />
               </div>
@@ -55,6 +44,4 @@ export default function HomePage()
           </div>
         </div>
       );
-      
-     
 }

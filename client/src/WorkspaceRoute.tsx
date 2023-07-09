@@ -4,7 +4,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom'
 import { LoadingComponent } from './Components/loading-component';
 import Navbar from './Components/navbar';
-import { GET_WORKSPACES_FILTER, WorkspaceResponse, WorkspacesForUser } from './Types/Workspace';
+import { GET_WORKSPACES_FILTER, WorkspaceResponse } from './Types/Workspace';
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { get } from 'http';
 import { Account, AccountResponseData } from './Types/Account';

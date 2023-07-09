@@ -20,18 +20,6 @@ query {
 }
 `;
 
-
-export interface WorkspaceResponseData {
-    workspacesForUser: WorkspacesForUser[];
-}
-
-
-export interface WorkspacesForUser {
-    id: string;
-    name: string;
-    url: string;
-}
-
 export interface WorkspaceResponse {
     workspace: Workspace;
 }

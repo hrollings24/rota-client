@@ -4,10 +4,10 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom'
 import { LoadingComponent } from './Components/loading-component';
 import Navbar from './Components/navbar';
-import { WorkspaceResponse, WorkspacesForUser } from './Types/Workspace';
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { get } from 'http';
 import { Account, AccountResponseData } from './Types/Account';
+import { AccountContextProvider } from './AccountContext';
 
 const GET_WORKSPACES_FILTER = gql`
 query {
@@ -37,6 +37,10 @@ query {
       id
       title,
       message
+    },
+    workspaces {
+      id,
+      name
     }
   }
 }
@@ -82,9 +86,11 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
   }
 
   return (
-    <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
-      <Navbar workspace={null} account={accountData!.account}></Navbar>      
-      {children}
-    </div>
+    <AccountContextProvider accountData={accountData}>
+      <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
+        <Navbar workspace={null} account={accountData!.account}></Navbar>      
+        {children}
+      </div>
+    </AccountContextProvider>
   );
 };

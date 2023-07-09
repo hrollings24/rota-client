@@ -10,5 +10,11 @@ export interface Account {
     surname: string
     notifications: any[]
     profilePictureUrl: string
+    workspaces: WorkspacesForUser[]
   }
   
+
+export interface WorkspacesForUser {
+    id: string;
+    name: string;
+}

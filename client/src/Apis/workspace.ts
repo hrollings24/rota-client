@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client"
 import gql from "graphql-tag"
 import { useState } from "react"
-import { WorkspaceResponseData } from "../Types/Workspace"
+import { WorkspaceResponse } from "../Types/Workspace"
 
 
 const GET_WORKSPACES = gql`
@@ -15,5 +15,5 @@ const GET_WORKSPACES = gql`
 `
 
 export function GetWorkspaces() {
-    return useQuery<WorkspaceResponseData>(GET_WORKSPACES)
+    return useQuery<WorkspaceResponse>(GET_WORKSPACES)
 }

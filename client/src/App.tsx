@@ -12,6 +12,7 @@ import { WorkspaceRoute } from './WorkspaceRoute';
 import CreateWorkspacePage from './Pages/Workspace/createworkspace.page';
 import WorkspaceParentPage from './Pages/Workspace/workspace.parent.page';
 import { WorkspaceSettingsPage } from './Pages/Workspace/admin/workspace.admin.settings.page';
+import { AccountContext } from './AccountContext';
 
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
             <BrowserRouter>
                 <AuthProvider> 
                     <Routes>
-                        <Route path="/" element={<PrivateRoute key={1}><HomePage/></PrivateRoute>} />
+                        <Route path="/" element={<PrivateRoute key={1}><HomePage /></PrivateRoute>} />
                         <Route path="/login" element={<LoginPage/>} />
                         <Route path="/signup" element={<SignupPage/>} />
                         <Route path="/home" element={<PrivateRoute key={2}><HomePage/></PrivateRoute>} />

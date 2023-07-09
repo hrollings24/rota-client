@@ -2,7 +2,7 @@ import { Cog6ToothIcon, Cog8ToothIcon } from "@heroicons/react/24/solid";
 import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../firebaseSetup";
-import { WorkspaceResponse, WorkspacesForUser } from "../Types/Workspace";
+import { WorkspaceResponse } from "../Types/Workspace";
 import AvatarComponent from "./avatar-component";
 import { Account } from "../Types/Account";
 
