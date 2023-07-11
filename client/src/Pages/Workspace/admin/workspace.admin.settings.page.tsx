@@ -5,15 +5,28 @@ import { ApolloQueryResult, QueryResult, gql, useMutation, useQuery } from "@apo
 import UserTableComponent from "./components/user.table.component";
 import DepartmentTableComponent from "./components/department.table.component";
 import DepartmentModalComponent from "./components/createdepartment.modal";
+import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 
 export const WorkspaceSettingsPage: React.FC<{ workspace: WorkspaceResponse }> = ({ workspace }) => {
   const [showCreateDepartmentModal, setShowCreateDepartmentModal] = useState(false);
+
+  const handleGoBack = () => {
+    window.history.back();
+  };
 
   const departments = workspace.workspace.departments;
 
   return (
     <div className="p-6">
-      <h1 className="font-bold text-white text-3xl mb-8">Settings</h1>
+      <h1 className="font-bold text-white text-3xl mb-8 flex items-center">
+        <button
+          className="mr-2 p-1 rounded hover:bg-gray-200"
+          onClick={handleGoBack}
+        >
+          <ChevronLeftIcon className="h-6 w-6 text-gray-300" />
+        </button>
+        Settings
+      </h1>
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-white text-2xl">Departments</h2>
         <button
