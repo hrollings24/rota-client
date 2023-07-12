@@ -16,7 +16,7 @@ export default function WorkspaceAdminHomePage({ workspace }: { workspace: Works
                   title={entry.name}
                   description="test"
                   url={entry.id}
-                  onClick={() => {}}
+                  onClick={() => {navigate("/workspace/" + workspace.workspace.id + "/department/" + entry.id)}}
                   buttonText="Go To Department"
                 />
               </div>

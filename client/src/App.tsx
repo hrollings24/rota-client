@@ -13,6 +13,7 @@ import CreateWorkspacePage from './Pages/Workspace/createworkspace.page';
 import WorkspaceParentPage from './Pages/Workspace/workspace.parent.page';
 import { WorkspaceSettingsPage } from './Pages/Workspace/admin/workspace.admin.settings.page';
 import { AccountContext } from './AccountContext';
+import DepartmentPage from './Pages/Workspace/user/workspace.department.page';
 
 
 function App() {
@@ -35,6 +36,11 @@ function App() {
                          <Route path="/workspace/:id/settings" element={<WorkspaceRoute>{(workspace) => (
                             <div>
                             <WorkspaceSettingsPage workspace={workspace} />
+                            </div>
+                        )}</WorkspaceRoute>} />
+                        <Route path="/workspace/:id/department/:id" element={<WorkspaceRoute>{(workspace) => (
+                            <div>
+                            <DepartmentPage workspace={workspace} />
                             </div>
                         )}</WorkspaceRoute>} />
                     </Routes>
