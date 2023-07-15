@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { gql, useLazyQuery } from "@apollo/client";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import DatePicker from "../../../Components/datepicker.component";
-import DatePickerComponent from "../../../Components/datepicker.component";
+import CreateShiftModal from "./components/createshift.modal";
 
 const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
   query GetShiftsForDepartment($departmentId: UUID!) {
@@ -32,6 +32,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
   const departmentId = match ? match[1].toLowerCase() : null;
 
   const [shifts, setShifts] = useState([] as ShiftResponse[]);
+  const [showModal, setShowModal] = useState(false);
 
   const [getShiftsForDepartment, { loading, data }] = useLazyQuery(
     GET_SHIFTS_FOR_DEPARTMENT_QUERY,
@@ -56,6 +57,8 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
     }
   }, [data]);
 
+  
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -68,9 +71,20 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
     return <div>Department not found</div>;
   }
 
-  const handleCreateShift = () => {
-    // Handle create shift logic
+  const openModal = () => {
+    setShowModal(true);
   };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const handleCreateShift = (shiftDate: Date | null, startTime: string, endTime: string) => {
+    // Handle create shift logic using the provided shiftDate, startTime, and endTime
+    // e.g., dispatch an action, make an API call, etc.
+    closeModal();
+  };
+
 
   return (
     <div style={{ padding: "20px" }}>
@@ -87,7 +101,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
         <h2 className="font-bold text-white text-2xl">Shifts</h2>
         <button
           className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none"
-          onClick={handleCreateShift}
+          onClick={openModal}
         >
           Create Shift
         </button>
@@ -101,7 +115,11 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
           ))}
         </ul>
       )}
-      <DatePickerComponent />
+      <CreateShiftModal
+      showModal={showModal}
+      onCloseModal={closeModal}
+      onCreateShift={handleCreateShift}
+    />
     </div>
   );
 };

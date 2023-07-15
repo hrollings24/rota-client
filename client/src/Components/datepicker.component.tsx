@@ -16,8 +16,12 @@ const CustomInput: React.FC<CustomInputProps> = ({ value, onClick }) => (
   </button>
 );
 
-const DatePickerComponent: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+interface DatePickerProps {
+  selectedDate: Date | null;
+  setSelectedDate: (date: Date | null) => void;
+}
+
+const DatePickerComponent: React.FC<DatePickerProps> = ({ selectedDate, setSelectedDate }) => {
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
