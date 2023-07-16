@@ -1,8 +1,8 @@
 import React from "react";
-import { ShiftResponse } from "./workspace.department.page";
+import { ParsedShiftResponse } from "./workspace.department.page";
 
 interface CardProps {
-  shift: ShiftResponse;
+  shift: ParsedShiftResponse;
 }
 
 const ShiftCard: React.FC<CardProps> = ({ shift }) => {
@@ -17,19 +17,21 @@ const ShiftCard: React.FC<CardProps> = ({ shift }) => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-md p-4 mb-4">
-      <p>Start Time: {shift.shiftStartTime}</p>
-      <p>End Time: {shift.shiftEndTime}</p>
+    <div className="bg-white shadow-md rounded-md p-4 mb-4 flex items-center justify-between">
+      <div>
+        <p>Start Time: {shift.shiftStartTime.toLocaleDateString() + " " + shift.shiftStartTime.toLocaleTimeString()}</p>
+        <p>End Time: {shift.shiftEndTime.toLocaleDateString() + " " + shift.shiftEndTime.toLocaleTimeString()}</p>
+      </div>
       {shift.assignedToAccountId ? (
         <button
-          className="px-4 py-2 mt-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
+          className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
           onClick={handleRemoveUser}
         >
           Remove User
         </button>
       ) : (
         <button
-          className="px-4 py-2 mt-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
           onClick={handleAssignUser}
         >
           Assign User

@@ -37,6 +37,14 @@ export interface ShiftResponse {
     assignedToAccountId: string;
 }
 
+export interface ParsedShiftResponse {
+  id: string;
+  departmentId: string;
+  shiftStartTime: Date;
+  shiftEndTime: Date;
+  assignedToAccountId: string;
+}
+
 
 export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = ({ workspace }) => {
   const handleGoBack = () => {
@@ -47,7 +55,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
   const match = location.pathname.match(/\/department\/([^/]+)/);
   const departmentId = match ? match[1].toLowerCase() : null;
 
-  const [shifts, setShifts] = useState([] as ShiftResponse[]);
+  const [shifts, setShifts] = useState([] as ParsedShiftResponse[]);
   const [showModal, setShowModal] = useState(false);
   const [createShift, { loading: createShiftLoading }] = useMutation(CREATE_SHIFT_MUTATION);
 
@@ -62,6 +70,16 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
     }
   );
 
+  const mapShiftResponseToParsedShiftResponse = (shifts: ShiftResponse[]): ParsedShiftResponse[] => {
+    return shifts.map((shift) => ({
+      id: shift.id,
+      departmentId: shift.departmentId,
+      shiftStartTime: new Date(shift.shiftStartTime),
+      shiftEndTime: new Date(shift.shiftEndTime),
+      assignedToAccountId: shift.assignedToAccountId,
+    }));
+  };
+
   useEffect(() => {
     if (departmentId) {
       getShiftsForDepartment({ variables: { departmentId } });
@@ -70,7 +88,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
 
   useEffect(() => {
     if (data) {
-      setShifts(data.shiftsForDepartment);
+      setShifts(mapShiftResponseToParsedShiftResponse(data.shiftsForDepartment));
     }
   }, [data]);
 
