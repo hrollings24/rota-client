@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { WorkspaceResponse } from "../../../Types/Workspace";
 import { useLocation } from "react-router-dom";
-import { gql, useLazyQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import DatePicker from "../../../Components/datepicker.component";
 import CreateShiftModal from "./components/createshift.modal";
@@ -10,6 +10,17 @@ const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
   query GetShiftsForDepartment($departmentId: UUID!) {
     shiftsForDepartment(request: { departmentId: $departmentId }) {
       id
+    }
+  }
+`;
+
+const CREATE_SHIFT_MUTATION = gql`
+  mutation CreateShift($shiftEndTime: String!, $shiftStartTime: String!, $departmentId: UUID!) {
+    createShift(request: { shiftEndTime: $shiftEndTime, shiftStartTime: $shiftStartTime, departmentId: $departmentId }) {
+      shiftStartTime
+      departmentId
+      assignedToAccountId
+      shiftEndTime
     }
   }
 `;
@@ -33,6 +44,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
 
   const [shifts, setShifts] = useState([] as ShiftResponse[]);
   const [showModal, setShowModal] = useState(false);
+  const [createShift, { loading: createShiftLoading }] = useMutation(CREATE_SHIFT_MUTATION);
 
   const [getShiftsForDepartment, { loading, data }] = useLazyQuery(
     GET_SHIFTS_FOR_DEPARTMENT_QUERY,
@@ -53,7 +65,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
 
   useEffect(() => {
     if (data) {
-      setShifts(data.getShiftsForDepartment || []);
+      setShifts(data.shiftsForDepartment);
     }
   }, [data]);
 
@@ -79,11 +91,34 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
     setShowModal(false);
   };
 
-  const handleCreateShift = (shiftDate: Date | null, startTime: string, endTime: string) => {
-    // Handle create shift logic using the provided shiftDate, startTime, and endTime
-    // e.g., dispatch an action, make an API call, etc.
+  const handleCreateShift = async (shiftDate: Date | null, startTime: string, endTime: string) => {
+    try {
+      const formattedEndTime = new Date(endTime).toISOString();
+      const formattedStartTime = new Date(startTime).toISOString();
+  
+      await createShift({
+        variables: {
+          shiftEndTime: formattedEndTime,
+          shiftStartTime: formattedStartTime,
+          departmentId: departmentId
+        },
+        context: {
+          headers: {
+            WorkspaceId: workspace.workspace.id
+          }
+        }
+      });
+  
+      // Handle success scenario
+    } catch (error) {
+      // Handle error scenario
+    }
+  
     closeModal();
   };
+  
+  
+  
 
 
   return (
