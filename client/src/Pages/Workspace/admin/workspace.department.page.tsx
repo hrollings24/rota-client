@@ -5,11 +5,15 @@ import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import DatePicker from "../../../Components/datepicker.component";
 import CreateShiftModal from "./components/createshift.modal";
+import ShiftCard from "./shift.card";
 
 const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
   query GetShiftsForDepartment($departmentId: UUID!) {
     shiftsForDepartment(request: { departmentId: $departmentId }) {
-      id
+      id,
+      shiftStartTime,
+      shiftEndTime,
+      assignedToAccountId
     }
   }
 `;
@@ -28,8 +32,9 @@ const CREATE_SHIFT_MUTATION = gql`
 export interface ShiftResponse {
     id: string;
     departmentId: string;
-    startTime: string;
-    endTime: string;
+    shiftStartTime: string;
+    shiftEndTime: string;
+    assignedToAccountId: string;
 }
 
 
@@ -146,7 +151,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
       ) : (
         <ul>
           {shifts.map((shift) => (
-            <li key={shift.id}>{shift.id}</li>
+            <ShiftCard shift={shift}></ShiftCard>
           ))}
         </ul>
       )}
