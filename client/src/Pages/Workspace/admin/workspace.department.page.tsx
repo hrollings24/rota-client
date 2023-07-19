@@ -1,22 +1,27 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { WorkspaceResponse } from "../../../Types/Workspace";
 import { useLocation } from "react-router-dom";
 import { gql, useLazyQuery, useMutation } from "@apollo/client";
-import { ChevronLeftIcon } from "@heroicons/react/24/solid";
-import DatePicker from "../../../Components/datepicker.component";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import CreateShiftModal from "./components/createshift.modal";
 import ShiftCard from "./shift.card";
+import { set } from "date-fns";
 
 const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
-  query GetShiftsForDepartment($departmentId: UUID!) {
-    shiftsForDepartment(request: { departmentId: $departmentId }) {
-      id,
-      shiftStartTime,
-      shiftEndTime,
-      assignedToAccountId
+  query GetShiftsForDepartment($departmentId: UUID!, $startTime: DateTime!, $endTime: DateTime!) {
+    shiftsForDepartment(
+      request: { departmentId: $departmentId }
+      where: {
+        shiftStartTime: { gte: $startTime, lt: $endTime }
+      }
+    ) {
+      id
+      shiftStartTime
+      shiftEndTime
     }
   }
 `;
+
 
 const CREATE_SHIFT_MUTATION = gql`
   mutation CreateShift($shiftEndTime: String!, $shiftStartTime: String!, $departmentId: UUID!) {
@@ -30,11 +35,11 @@ const CREATE_SHIFT_MUTATION = gql`
 `;
 
 export interface ShiftResponse {
-    id: string;
-    departmentId: string;
-    shiftStartTime: string;
-    shiftEndTime: string;
-    assignedToAccountId: string;
+  id: string;
+  departmentId: string;
+  shiftStartTime: string;
+  shiftEndTime: string;
+  assignedToAccountId: string;
 }
 
 export interface ParsedShiftResponse {
@@ -44,7 +49,6 @@ export interface ParsedShiftResponse {
   shiftEndTime: Date;
   assignedToAccountId: string;
 }
-
 
 export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = ({ workspace }) => {
   const handleGoBack = () => {
@@ -57,7 +61,24 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
 
   const [shifts, setShifts] = useState([] as ParsedShiftResponse[]);
   const [showModal, setShowModal] = useState(false);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set time to midnight
+
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+  
   const [createShift, { loading: createShiftLoading }] = useMutation(CREATE_SHIFT_MUTATION);
+
+  const increaseDate = () => {
+    const newDate = new Date(selectedDate);
+    newDate.setDate(selectedDate.getDate() + 1);
+    setSelectedDate(newDate);
+  };
+  
+  const decreaseDate = () => {
+    const newDate = new Date(selectedDate);
+    newDate.setDate(selectedDate.getDate() - 1);
+    setSelectedDate(newDate);
+  };
 
   const [getShiftsForDepartment, { loading, data }] = useLazyQuery(
     GET_SHIFTS_FOR_DEPARTMENT_QUERY,
@@ -81,18 +102,26 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
   };
 
   useEffect(() => {
+    console.log(departmentId)
     if (departmentId) {
-      getShiftsForDepartment({ variables: { departmentId } });
+      var endDate = new Date(selectedDate);
+      endDate.setHours(23, 59, 59, 999); // Set time to 11:59 PM
+  
+      getShiftsForDepartment({
+        variables: {
+          departmentId: departmentId,
+          startTime: selectedDate.toISOString(), // Start time (midnight)
+          endTime: endDate.toISOString(), // End time (11:59 PM)
+        },
+      });
     }
-  }, [departmentId, getShiftsForDepartment]);
+  }, [departmentId, selectedDate, getShiftsForDepartment]);
 
   useEffect(() => {
     if (data) {
       setShifts(mapShiftResponseToParsedShiftResponse(data.shiftsForDepartment));
     }
   }, [data]);
-
-  
 
   if (loading) {
     return <div>Loading...</div>;
@@ -118,7 +147,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
     try {
       const formattedEndTime = new Date(endTime).toISOString();
       const formattedStartTime = new Date(startTime).toISOString();
-  
+
       await createShift({
         variables: {
           shiftEndTime: formattedEndTime,
@@ -131,18 +160,14 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
           }
         }
       });
-  
+
       // Handle success scenario
     } catch (error) {
       // Handle error scenario
     }
-  
+
     closeModal();
   };
-  
-  
-  
-
 
   return (
     <div style={{ padding: "20px" }}>
@@ -155,8 +180,23 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
         </button>
         {department.name}
       </h1>
+      <h2 className="font-bold text-white text-2xl mb-4">Shifts</h2>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-bold text-white text-2xl">Shifts</h2>
+        <div className="flex items-center">
+          <button
+            className="mr-2 p-1 rounded hover:bg-gray-200"
+            onClick={decreaseDate}
+          >
+            <ChevronLeftIcon className="h-6 w-6 text-gray-300" />
+          </button>
+          <p className="text-white">{selectedDate.toLocaleDateString()}</p>
+          <button
+            className="ml-2 p-1 rounded hover:bg-gray-200"
+            onClick={increaseDate}
+          >
+            <ChevronRightIcon className="h-6 w-6 text-gray-300" />
+          </button>
+        </div>
         <button
           className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none"
           onClick={openModal}
@@ -167,17 +207,13 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
       {shifts.length === 0 ? (
         <p>No shifts available.</p>
       ) : (
-        <ul>
+        <div>
           {shifts.map((shift) => (
-            <ShiftCard shift={shift}></ShiftCard>
+            <ShiftCard key={shift.id} shift={shift} />
           ))}
-        </ul>
+        </div>
       )}
-      <CreateShiftModal
-      showModal={showModal}
-      onCloseModal={closeModal}
-      onCreateShift={handleCreateShift}
-    />
+      <CreateShiftModal showModal={showModal} onCloseModal={closeModal} onCreateShift={handleCreateShift} />
     </div>
   );
 };
