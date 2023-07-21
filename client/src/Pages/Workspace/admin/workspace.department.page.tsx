@@ -209,7 +209,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
       ) : (
         <div>
           {shifts.map((shift) => (
-            <ShiftCard key={shift.id} shift={shift} />
+            <ShiftCard key={shift.id} shift={shift} workspace={workspace.workspace} />
           ))}
         </div>
       )}
