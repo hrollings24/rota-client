@@ -15,7 +15,7 @@ const ShiftCard: React.FC<CardProps> = ({ shift, workspace }) => {
     const handleCloseModal = () => {
         setShowUserSelectorModal(false);
       };
-      
+
   const handleAssignUser = () => {
     // Handle assign user logic
     console.log("Assigning user to shift:", shift.id);
@@ -33,6 +33,11 @@ const ShiftCard: React.FC<CardProps> = ({ shift, workspace }) => {
             <div>
                 <p>Start Time: {shift.shiftStartTime.toLocaleDateString() + " " + shift.shiftStartTime.toLocaleTimeString()}</p>
                 <p>End Time: {shift.shiftEndTime.toLocaleDateString() + " " + shift.shiftEndTime.toLocaleTimeString()}</p>
+                {shift.assignedUser ? (
+                <p>Assigned To User: {shift.assignedUser.firstName}</p>
+                ) : (
+                <p>Assigned To User: None</p>
+                )}
             </div>
             {shift.assignedToAccountId ? (
                 <button

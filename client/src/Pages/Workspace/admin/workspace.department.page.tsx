@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { WorkspaceResponse } from "../../../Types/Workspace";
+import { User, WorkspaceResponse } from "../../../Types/Workspace";
 import { useLocation } from "react-router-dom";
 import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
@@ -18,6 +18,10 @@ const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
       id
       shiftStartTime
       shiftEndTime
+      assignedUser {
+        firstName
+        surname
+      }
     }
   }
 `;
@@ -40,6 +44,7 @@ export interface ShiftResponse {
   shiftStartTime: string;
   shiftEndTime: string;
   assignedToAccountId: string;
+  assignedUser: User;
 }
 
 export interface ParsedShiftResponse {
@@ -48,6 +53,7 @@ export interface ParsedShiftResponse {
   shiftStartTime: Date;
   shiftEndTime: Date;
   assignedToAccountId: string;
+  assignedUser: User;
 }
 
 export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = ({ workspace }) => {
@@ -98,6 +104,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
       shiftStartTime: new Date(shift.shiftStartTime),
       shiftEndTime: new Date(shift.shiftEndTime),
       assignedToAccountId: shift.assignedToAccountId,
+      assignedUser: shift.assignedUser,
     }));
   };
 
