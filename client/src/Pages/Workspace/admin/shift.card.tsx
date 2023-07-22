@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ParsedShiftResponse } from "./workspace.department.page";
 import { Workspace } from "../../../Types/Workspace";
 import WorkspaceUserSelectorModal from "../../../Components/workspace-user-selector-modal";
+import ShiftStateText from "./components/shift.statetext";
 
 interface CardProps {
   shift: ParsedShiftResponse;
@@ -33,11 +34,7 @@ const ShiftCard: React.FC<CardProps> = ({ shift, workspace }) => {
             <div>
                 <p>Start Time: {shift.shiftStartTime.toLocaleDateString() + " " + shift.shiftStartTime.toLocaleTimeString()}</p>
                 <p>End Time: {shift.shiftEndTime.toLocaleDateString() + " " + shift.shiftEndTime.toLocaleTimeString()}</p>
-                {shift.assignedUser ? (
-                <p>Assigned To User: {shift.assignedUser.firstName}</p>
-                ) : (
-                <p>Assigned To User: None</p>
-                )}
+                <ShiftStateText shift={shift}></ShiftStateText>
             </div>
             {shift.assignedToAccountId ? (
                 <button

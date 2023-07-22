@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { User, WorkspaceResponse } from "../../../Types/Workspace";
+import { ShiftState, User, WorkspaceResponse } from "../../../Types/Workspace";
 import { useLocation } from "react-router-dom";
 import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
@@ -18,6 +18,7 @@ const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
       id
       shiftStartTime
       shiftEndTime
+      state
       assignedUser {
         firstName
         surname
@@ -28,8 +29,8 @@ const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
 
 
 const CREATE_SHIFT_MUTATION = gql`
-  mutation CreateShift($shiftEndTime: String!, $shiftStartTime: String!, $departmentId: UUID!) {
-    createShift(request: { shiftEndTime: $shiftEndTime, shiftStartTime: $shiftStartTime, departmentId: $departmentId }) {
+  mutation CreateShift($shiftEndTime: String!, $shiftStartTime: String!, $departmentId: UUID! $state: ShiftState!) {
+    createShift(request: { shiftEndTime: $shiftEndTime, shiftStartTime: $shiftStartTime, departmentId: $departmentId, state: $state }) {
       shiftStartTime
       departmentId
       assignedToAccountId
@@ -45,6 +46,7 @@ export interface ShiftResponse {
   shiftEndTime: string;
   assignedToAccountId: string;
   assignedUser: User;
+  state: string;
 }
 
 export interface ParsedShiftResponse {
@@ -54,6 +56,7 @@ export interface ParsedShiftResponse {
   shiftEndTime: Date;
   assignedToAccountId: string;
   assignedUser: User;
+  state: string;
 }
 
 export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = ({ workspace }) => {
@@ -105,6 +108,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
       shiftEndTime: new Date(shift.shiftEndTime),
       assignedToAccountId: shift.assignedToAccountId,
       assignedUser: shift.assignedUser,
+      state: shift.state.toString()
     }));
   };
 
@@ -159,7 +163,8 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
         variables: {
           shiftEndTime: formattedEndTime,
           shiftStartTime: formattedStartTime,
-          departmentId: departmentId
+          departmentId: departmentId,
+          state: ShiftState.UNASSIGNED_AND_HIDDEN
         },
         context: {
           headers: {

@@ -43,3 +43,10 @@ export interface Department {
     id: string;
     name: string;
 }
+
+export enum ShiftState {
+  UNKNOWN = 'UNKNOWN',
+  AVALIABLE_TO_PICK_UP = 'AVALIABLE_TO_PICK_UP',
+  UNASSIGNED_AND_HIDDEN = 'UNASSIGNED_AND_HIDDEN',
+  ASSIGNED = 'ASSIGNED',
+}
