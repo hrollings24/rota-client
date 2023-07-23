@@ -8,7 +8,7 @@ export interface Account {
     username: string
     firstName: string
     surname: string
-    notifications: any[]
+    notifications: NotificationResponse[]
     profilePictureUrl: string
     workspaces: WorkspacesForUser[]
   }
@@ -17,4 +17,10 @@ export interface Account {
 export interface WorkspacesForUser {
     id: string;
     name: string;
+}
+
+export interface NotificationResponse {
+    id: string;
+    message: string;
+    title: string;
 }
