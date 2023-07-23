@@ -97,7 +97,7 @@ export const WorkspaceRoute: React.FC<IWorkspaceRouteProps> = ({ children }) => 
 
   return (
     <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
-      <Navbar workspace={workspace} account={accountData!.account}></Navbar>      
+      <Navbar workspace={workspace}></Navbar>      
       {children(workspace!)}
     </div>
   );

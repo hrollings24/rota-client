@@ -18,7 +18,7 @@ export default function HomePage() {
     const renderRow = () => {
         return (
           <div>
-            {accountData?.account.workspaces.map((entry) => (
+            {accountData?.accountData?.account.workspaces.map((entry) => (
               <div key={entry.id} className="mb-6">
                 <Card title={entry.name} description="test" url={entry.id} onClick={() => goToWorkspace(entry.id)} buttonText="Go To Workspace" />
               </div>

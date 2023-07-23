@@ -1,15 +1,17 @@
 import { Cog6ToothIcon, Cog8ToothIcon } from "@heroicons/react/24/solid";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../firebaseSetup";
 import { WorkspaceResponse } from "../Types/Workspace";
 import AvatarComponent from "./avatar-component";
 import { Account } from "../Types/Account";
+import { AccountContext } from "../AccountContext";
 
-export default function Navbar({ workspace, account }: { workspace: WorkspaceResponse | null, account: Account }) {
+export default function Navbar({ workspace }: { workspace: WorkspaceResponse | null }) {
   const name = auth.currentUser?.email;
   const location = useLocation();
   const navigate = useNavigate();
+  const { accountData, setAccountData } = useContext(AccountContext);
 
   const getName = () => {
     if (workspace == null) {
@@ -31,12 +33,25 @@ export default function Navbar({ workspace, account }: { workspace: WorkspaceRes
   };
 
   const getNotificationCount = () => {
-    if (account?.notifications?.length > 0) {
-      return account.notifications.length;
-    } else {
+
+    if (accountData?.account?.notifications == null) {
       return null;
+    } else {
+      if (accountData?.account?.notifications?.length > 0) {
+        return accountData?.account.notifications.length;
+      } else {
+        return null;
+      }
     }
   };
+
+  const getInitials = () => {
+    if (accountData?.account?.firstName == null || accountData?.account?.surname == null) {
+      return null;
+    } else {
+      return accountData?.account?.firstName.charAt(0) + accountData?.account?.surname.charAt(0);
+    }
+  }
 
   return (
     <div>
@@ -104,7 +119,7 @@ export default function Navbar({ workspace, account }: { workspace: WorkspaceRes
                   data-te-dropdown-toggle-ref
                   aria-expanded="false"
                 >
-                  <AvatarComponent url={""} initials={account?.firstName?.charAt(0) + account?.surname.charAt(0)} />
+                  <AvatarComponent url={""} initials={getInitials()} />
                 </button>
               </div>
             </div>

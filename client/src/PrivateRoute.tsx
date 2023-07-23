@@ -88,7 +88,7 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
   return (
     <AccountContextProvider accountData={accountData}>
       <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
-        <Navbar workspace={null} account={accountData!.account}></Navbar>      
+        <Navbar workspace={null}></Navbar>      
         {children}
       </div>
     </AccountContextProvider>

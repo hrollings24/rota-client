@@ -2,18 +2,48 @@ import { GetWorkspaces } from "../../Apis/workspace";
 import { LoadingComponent } from "../../Components/loading-component";
 import { useNavigate } from "react-router-dom";
 import { AccountResponseData, NotificationResponse } from "../../Types/Account";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AccountContext } from "../../AccountContext";
+import { gql, useMutation } from "@apollo/client";
+
+const DISMISS_NOTIFICATION = gql`
+mutation DismissNotification($id: String!) {
+    dismissNotification(request: { id: $id })
+  }
+`;
 
 export default function NotificationsPage() {
-    const accountData = useContext(AccountContext);
+    const { accountData, setAccountData } = useContext(AccountContext);
+  
+    const [dismissMutation] = useMutation(DISMISS_NOTIFICATION);
   
     // Handle the dismissal of a notification
-    const handleDismissNotification = (notificationId: string) => {
-      // Implement your logic to dismiss the notification with the given notificationId
-      // For example, you could update the state or make an API call to mark the notification as dismissed
-      // For now, we'll just log the dismissal for demonstration purposes.
-      console.log(`Notification with ID ${notificationId} dismissed.`);
+    const handleDismissNotification = async (notificationId: string) => {
+      try {
+        await dismissMutation({ variables: { id: notificationId } });
+        console.log(`Notification with ID ${notificationId} dismissed.`);
+  
+        if (accountData !== null && accountData.account.notifications) {
+          const updatedNotifications = accountData.account.notifications.filter(
+            (notification: NotificationResponse) => notification.id !== notificationId
+          ) as NotificationResponse[];
+  
+          // Create a new object and update the notifications property
+          const updatedAccountData = {
+            ...accountData,
+            account: {
+              ...accountData.account,
+              notifications: updatedNotifications,
+            },
+          };
+  
+          // Update accountData using setAccountData (useState updater function)
+          setAccountData(updatedAccountData);
+        }
+      } catch (error) {
+        // Handle the error
+        console.error('Error dismissing notification:', error);
+      }
     };
   
     return (
