@@ -4,11 +4,13 @@ import { User } from '../Types/Workspace';
 interface WorkspaceUserSelectorModalProps {
     users: User[];
     onClose: () => void; // Callback to close the modal
+    onSubmit: (accountId: string) => void; // Callback to close the modal
   }
   
   const WorkspaceUserSelectorModal: React.FC<WorkspaceUserSelectorModalProps> = ({
     users,
     onClose,
+    onSubmit,
   }) => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
@@ -26,7 +28,7 @@ interface WorkspaceUserSelectorModalProps {
       // Handle select user logic here
       console.log('Selected user:', selectedUser);
       // Close the modal
-      onClose();
+      onSubmit(selectedUser.accountId);
     };
   
     const handleCloseModal = () => {

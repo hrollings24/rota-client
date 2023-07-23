@@ -7,7 +7,7 @@ import CreateShiftModal from "./components/createshift.modal";
 import ShiftCard from "./shift.card";
 import { set } from "date-fns";
 
-const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
+export const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
   query GetShiftsForDepartment($departmentId: UUID!, $startTime: DateTime!, $endTime: DateTime!) {
     shiftsForDepartment(
       request: { departmentId: $departmentId }
@@ -19,9 +19,11 @@ const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
       shiftStartTime
       shiftEndTime
       state
+      departmentId
       assignedUser {
         firstName
         surname
+        accountId
       }
     }
   }
@@ -44,9 +46,8 @@ export interface ShiftResponse {
   departmentId: string;
   shiftStartTime: string;
   shiftEndTime: string;
-  assignedToAccountId: string;
   assignedUser: User;
-  state: string;
+  state: ShiftState;
 }
 
 export interface ParsedShiftResponse {
@@ -54,9 +55,8 @@ export interface ParsedShiftResponse {
   departmentId: string;
   shiftStartTime: Date;
   shiftEndTime: Date;
-  assignedToAccountId: string;
   assignedUser: User;
-  state: string;
+  state: ShiftState;
 }
 
 export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = ({ workspace }) => {
@@ -92,6 +92,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
   const [getShiftsForDepartment, { loading, data }] = useLazyQuery(
     GET_SHIFTS_FOR_DEPARTMENT_QUERY,
     {
+      fetchPolicy: "no-cache",      
       context: {
         headers: {
           WorkspaceId: workspace.workspace.id,
@@ -106,18 +107,24 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
       departmentId: shift.departmentId,
       shiftStartTime: new Date(shift.shiftStartTime),
       shiftEndTime: new Date(shift.shiftEndTime),
-      assignedToAccountId: shift.assignedToAccountId,
       assignedUser: shift.assignedUser,
-      state: shift.state.toString()
+      state: shift.state
     }));
   };
 
   useEffect(() => {
-    console.log(departmentId)
     if (departmentId) {
+      callGetShifts();
+    }
+  }, [departmentId, selectedDate, getShiftsForDepartment]);
+
+
+  const callGetShifts = () => {
+      console.log("in callGetSHifts")
       var endDate = new Date(selectedDate);
       endDate.setHours(23, 59, 59, 999); // Set time to 11:59 PM
   
+      console.log("should call")
       getShiftsForDepartment({
         variables: {
           departmentId: departmentId,
@@ -125,11 +132,11 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
           endTime: endDate.toISOString(), // End time (11:59 PM)
         },
       });
-    }
-  }, [departmentId, selectedDate, getShiftsForDepartment]);
+  }
 
   useEffect(() => {
     if (data) {
+      console.log("gotten refreshed data")
       setShifts(mapShiftResponseToParsedShiftResponse(data.shiftsForDepartment));
     }
   }, [data]);
@@ -221,7 +228,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
       ) : (
         <div>
           {shifts.map((shift) => (
-            <ShiftCard key={shift.id} shift={shift} workspace={workspace.workspace} />
+            <ShiftCard key={shift.id} shift={shift} workspace={workspace.workspace} refreshDepartment={callGetShifts} />
           ))}
         </div>
       )}
