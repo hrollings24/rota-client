@@ -8,6 +8,7 @@ import { GET_WORKSPACES_FILTER, WorkspaceResponse } from './Types/Workspace';
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { get } from 'http';
 import { Account, AccountResponseData } from './Types/Account';
+import { AccountContextProvider } from './AccountContext';
 
 const GET_ACCOUNT_QUERY = gql`
 query {
@@ -96,9 +97,11 @@ export const WorkspaceRoute: React.FC<IWorkspaceRouteProps> = ({ children }) => 
   }
 
   return (
-    <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
-      <Navbar workspace={workspace}></Navbar>      
-      {children(workspace!)}
-    </div>
+    <AccountContextProvider accountData={accountData}>
+      <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
+        <Navbar workspace={workspace}></Navbar>      
+        {children(workspace!)}
+      </div>
+    </AccountContextProvider>
   );
 };
