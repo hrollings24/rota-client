@@ -23,7 +23,7 @@ export interface CreateAccountResponse {
 const CREATE_ACCOUNT = gql`
   mutation createAccount($request: CreateAccountRequestInput!) {
     createAccount(request: $request) {
-      id
+      accountId
       username
     }
   }
