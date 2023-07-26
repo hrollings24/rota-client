@@ -8,16 +8,45 @@ import DepartmentModalComponent from "./components/createdepartment.modal";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import UserSearchModal from "../../../Components/user-search-modal";
 
+const INVITE_USER = gql`
+  mutation InviteUserToWorkspace($email: String!, $workspaceId: UUID!) {
+    inviteAccountToWorkspace(request: {
+      email: $email
+      workspaceId: $workspaceId
+    }) {
+      accountId
+      workspaceId
+    }
+  }
+`;
+
 export const WorkspaceSettingsPage: React.FC<{ workspace: WorkspaceResponse }> = ({ workspace }) => {
   const [showCreateDepartmentModal, setShowCreateDepartmentModal] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
+  const [inviteUserToWorkspace] = useMutation(INVITE_USER);
 
   const handleGoBack = () => {
     window.history.back();
   };
 
-  const handleUserSelected = (email: string) => {
-    console.log(email)
+  const handleUserSelected = async (email: string) => {
+    inviteUserToWorkspace({
+      variables: {
+        email: email,
+        workspaceId: workspace.workspace.id
+      }, context: {
+        headers: {
+          WorkspaceId: workspace.workspace.id,
+        },
+      },
+    })
+      .then((result) => {
+        console.log("Invitation sent successfully!", result.data.inviteAccountToWorkspace);
+      })
+      .catch((error) => {
+        console.error("Error sending invitation:", error.message);
+      });
+      setShowUserModal(false)
   }
 
   const departments = workspace.workspace.departments;
