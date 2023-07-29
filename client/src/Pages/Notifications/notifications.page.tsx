@@ -13,7 +13,7 @@ mutation DismissNotification($id: String!) {
 `;
 
 export default function NotificationsPage() {
-    const { accountData, setAccountData } = useContext(AccountContext);
+    const [ accountData, setAccountData ] = useContext(AccountContext);
   
     const [dismissMutation] = useMutation(DISMISS_NOTIFICATION);
   

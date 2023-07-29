@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import TabComponent from "../../Components/tab-component";
 import AccountSettingsTab from "./account.settings.account.tab";
 import AccountProfileTab from "./account.settings.profile.tab";
 import AccountWorkspacesTab from "./account.settings.workspaces.tab";
 import { auth } from "../../firebaseSetup";
 import { useNavigate } from "react-router-dom";
+import { AccountContext } from "../../AccountContext";
 
 export default function AccountSettingsPage() {
     const titles = ['Account', 'Profile', 'Workspaces'];
     const navigate = useNavigate();
-  
+    const [ accountData, setAccountData ] = useContext(AccountContext);
+
     //create a useState for the current tab
     const [currentTab, setCurrentTab] = useState("");
 
@@ -28,9 +30,10 @@ export default function AccountSettingsPage() {
 
     const logout = () => {
         auth.signOut();
-        //navigate back to login page
+        setAccountData(null);
+        // navigate back to login page
         navigate("/login");
-    }
+      };
 
 
     return (

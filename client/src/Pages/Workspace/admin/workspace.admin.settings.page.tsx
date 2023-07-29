@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { WorkspaceResponse } from "../../../Types/Workspace";
 import { Modal } from "./workspace.modal";
-import { ApolloQueryResult, QueryResult, gql, useMutation, useQuery } from "@apollo/client";
+import { ApolloError, ApolloQueryResult, QueryResult, gql, useMutation, useQuery } from "@apollo/client";
 import UserTableComponent from "./components/user.table.component";
 import DepartmentTableComponent from "./components/department.table.component";
 import DepartmentModalComponent from "./components/createdepartment.modal";
@@ -24,29 +24,48 @@ export const WorkspaceSettingsPage: React.FC<{ workspace: WorkspaceResponse }> =
   const [showCreateDepartmentModal, setShowCreateDepartmentModal] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const [inviteUserToWorkspace] = useMutation(INVITE_USER);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+
+  const handleDismissError = () => {
+    setInviteError(null); // Clear the error message
+  };
+
 
   const handleGoBack = () => {
     window.history.back();
   };
 
-  const handleUserSelected = async (email: string) => {
-    inviteUserToWorkspace({
-      variables: {
-        email: email,
-        workspaceId: workspace.workspace.id
-      }, context: {
-        headers: {
-          WorkspaceId: workspace.workspace.id,
+    const handleUserSelected = async (email: string) => {
+    try {
+      setInviteError(null); // Reset the error state before making the mutation call
+      const result = await inviteUserToWorkspace({
+        variables: {
+          email: email,
+          workspaceId: workspace.workspace.id
         },
-      },
-    })
-      .then((result) => {
-        console.log("Invitation sent successfully!", result.data.inviteAccountToWorkspace);
-      })
-      .catch((error) => {
-        console.error("Error sending invitation:", error.message);
+        context: {
+          headers: {
+            WorkspaceId: workspace.workspace.id,
+          },
+        },
       });
-      setShowUserModal(false)
+    } catch (error) {
+      console.log(error)
+      if (error instanceof ApolloError) {
+        console.log("true")
+        // Check if the error has graphQLErrors and show the specific error message
+        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+          const errorMessage = error.graphQLErrors[0].message;
+          console.error("Error sending invitation:", errorMessage);
+          setInviteError(errorMessage); // Set the specific error message in case of an error
+        } else {
+          console.error("Error sending invitation:", error.message);
+          setInviteError("Error sending invitation. " + error.message);
+        }
+      }
+    } finally {
+      setShowUserModal(false); // Close the user search modal, whether there's an error or not
+    }
   }
 
   const departments = workspace.workspace.departments;
@@ -99,6 +118,24 @@ export const WorkspaceSettingsPage: React.FC<{ workspace: WorkspaceResponse }> =
           action={handleUserSelected}
         />
       )}
+      {inviteError && <ErrorAlert message={inviteError} onClose={handleDismissError} />}
+    </div>
+  );
+};
+
+
+interface errorProps{
+  message: string,
+  onClose: () => void
+}
+
+const ErrorAlert = (props: errorProps) => {
+  return (
+    <div className="fixed bottom-4 left-4 right-4 bg-red-500 text-white p-4 rounded shadow-lg flex justify-between">
+      <div>{props.message}</div>
+      <button onClick={props.onClose} className="text-white font-bold ml-4">
+        Close
+      </button>
     </div>
   );
 };

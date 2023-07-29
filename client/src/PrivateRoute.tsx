@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react'; 
+import React, { useContext, useEffect, useState } from 'react'; 
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom'
 import { LoadingComponent } from './Components/loading-component';
@@ -7,7 +7,7 @@ import Navbar from './Components/navbar';
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { get } from 'http';
 import { Account, AccountResponseData } from './Types/Account';
-import { AccountContextProvider } from './AccountContext';
+import { AccountContext, AccountContextProvider } from './AccountContext';
 
 const GET_WORKSPACES_FILTER = gql`
 query {
@@ -55,12 +55,13 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
   const auth = getAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [accountData, setAccountData] = useState<AccountResponseData | null>(null);
+  const [ accountData, setAccountData ] = useContext(AccountContext);
 
   const [
     getAccount,
     { loading: accountLoading, data: accountQueryData },
   ] = useLazyQuery(GET_ACCOUNT_QUERY, {
+    fetchPolicy: 'no-cache',
     onCompleted: (data) => setAccountData(data),
   });
 
@@ -86,11 +87,9 @@ export const PrivateRoute: React.FC<IAuthRouteProps> = ({ children }) => {
   }
 
   return (
-    <AccountContextProvider accountData={accountData}>
-      <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
-        <Navbar workspace={null}></Navbar>      
-        {children}
-      </div>
-    </AccountContextProvider>
+    <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
+      <Navbar workspace={null}></Navbar>      
+      {children}
+    </div>
   );
 };

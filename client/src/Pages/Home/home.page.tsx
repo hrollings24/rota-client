@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { AccountContext } from "../../AccountContext";
 
 export default function HomePage() {
-  const accountData = useContext(AccountContext);
+  const [accountData, setAccountData]= useContext(AccountContext);
   
     const navigate = useNavigate();
 
@@ -18,7 +18,7 @@ export default function HomePage() {
     const renderRow = () => {
         return (
           <div>
-            {accountData?.accountData?.account.workspaces.map((entry) => (
+            {accountData?.account.workspaces.map((entry) => (
               <div key={entry.id} className="mb-6">
                 <Card title={entry.name} description="test" url={entry.id} onClick={() => goToWorkspace(entry.id)} buttonText="Go To Workspace" />
               </div>

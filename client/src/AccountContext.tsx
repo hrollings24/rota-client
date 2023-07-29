@@ -1,24 +1,19 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { AccountResponseData } from './Types/Account';
 
-export const AccountContext = createContext<{ accountData: AccountResponseData | null; setAccountData: React.Dispatch<React.SetStateAction<AccountResponseData | null>> }>({
-  accountData: null,
-  setAccountData: () => null,
-});
+export const AccountContext = createContext<[AccountResponseData | null, React.Dispatch<React.SetStateAction<AccountResponseData | null>>]>([null, () => {}]);
 
 interface AccountContextProviderProps {
-  accountData: AccountResponseData;
   children: React.ReactNode;
 }
 
 export const AccountContextProvider: React.FC<AccountContextProviderProps> = ({
-  accountData,
   children,
 }) => {
-  const [accountDataState, setAccountDataState] = useState<AccountResponseData | null>(accountData);
-
+  const [accountDataState, setAccountDataState] = useState<AccountResponseData | null>(null);
+  
   return (
-    <AccountContext.Provider value={{ accountData: accountDataState, setAccountData: setAccountDataState }}>
+    <AccountContext.Provider value={[accountDataState, setAccountDataState ]}>
       {children}
     </AccountContext.Provider>
   );

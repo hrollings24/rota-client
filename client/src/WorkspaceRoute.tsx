@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react'; 
+import React, { useContext, useEffect, useState } from 'react'; 
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom'
 import { LoadingComponent } from './Components/loading-component';
@@ -8,7 +8,7 @@ import { GET_WORKSPACES_FILTER, WorkspaceResponse } from './Types/Workspace';
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { get } from 'http';
 import { Account, AccountResponseData } from './Types/Account';
-import { AccountContextProvider } from './AccountContext';
+import { AccountContext, AccountContextProvider } from './AccountContext';
 
 const GET_ACCOUNT_QUERY = gql`
 query {
@@ -38,7 +38,7 @@ export const WorkspaceRoute: React.FC<IWorkspaceRouteProps> = ({ children }) => 
   const [isLoading, setLoading] = useState(true);
   const location = useLocation();
   const [workspace, setWorkspace] = useState<WorkspaceResponse | null>(null);
-  const [accountData, setAccountData] = useState<AccountResponseData | null>(null);
+  const [ accountData, setAccountData ] = useContext(AccountContext);
 
  
 
@@ -97,11 +97,9 @@ export const WorkspaceRoute: React.FC<IWorkspaceRouteProps> = ({ children }) => 
   }
 
   return (
-    <AccountContextProvider accountData={accountData}>
-      <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
-        <Navbar workspace={workspace}></Navbar>      
-        {children(workspace!)}
-      </div>
-    </AccountContextProvider>
+    <div style={{ backgroundColor: '#00203FFF', minHeight: '100vh' }}>
+      <Navbar workspace={workspace}></Navbar>      
+      {children(workspace!)}
+    </div>
   );
 };

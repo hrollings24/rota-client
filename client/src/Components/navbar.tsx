@@ -11,7 +11,7 @@ export default function Navbar({ workspace }: { workspace: WorkspaceResponse | n
   const name = auth.currentUser?.email;
   const location = useLocation();
   const navigate = useNavigate();
-  const { accountData, setAccountData } = useContext(AccountContext);
+  const [ accountData, setAccountData ] = useContext(AccountContext);
 
   const getName = () => {
     if (workspace == null) {
