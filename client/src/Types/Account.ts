@@ -11,6 +11,7 @@ export interface Account {
     notifications: NotificationResponse[]
     profilePictureUrl: string
     workspaces: WorkspacesForUser[]
+    invites: InviteResponse[]
   }
   
 
@@ -23,4 +24,10 @@ export interface NotificationResponse {
     id: string;
     message: string;
     title: string;
+}
+
+export interface InviteResponse {
+    inviteId: string;
+    workspaceId: string;
+    workspaceName: string;
 }

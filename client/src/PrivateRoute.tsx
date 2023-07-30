@@ -41,6 +41,11 @@ query {
     workspaces {
       id,
       name
+    },
+    invites {
+      inviteId,
+      workspaceId,
+      workspaceName
     }
   }
 }
