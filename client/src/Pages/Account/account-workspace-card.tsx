@@ -1,12 +1,22 @@
 import React from 'react';
+import { gql, useMutation } from "@apollo/client";
+
+const DECLINE_INVITE_MUTATION = gql`
+  mutation DeclineInviteRequest($inviteId: UUID!) {
+    declineInvite(inviteId: $inviteId)
+  }
+`;
 
 export interface WorkspaceAccountCardComponentProps {
   name: string;
   workspaceId: string;
   isInvite: boolean;
+  inviteId: string | undefined;
 }
 
 const WorkspaceCard = ({ workspace }: { workspace: WorkspaceAccountCardComponentProps }) => {
+  const [declineInviteMutation, { loading: declineInviteLoading }] = useMutation(DECLINE_INVITE_MUTATION);
+
   const handleLeaveClick = () => {
     // Add the logic to handle leaving the workspace here
     console.log(`Leaving workspace: ${workspace.name}`);
@@ -17,9 +27,22 @@ const WorkspaceCard = ({ workspace }: { workspace: WorkspaceAccountCardComponent
     console.log(`Joining workspace: ${workspace.name}`);
   };
 
-  const handleDeclineClick = () => {
+  const handleDeclineClick = async () => {
     // Add the logic to handle declining the workspace invitation here
     console.log(`Declining workspace invitation: ${workspace.name}`);
+    if (workspace.inviteId) {
+      try {
+        await declineInviteMutation({
+          variables: {
+            inviteId: workspace.inviteId,
+          },
+        });
+        // Handle success or UI updates after declining the invitation
+      } catch (error) {
+        // Handle errors if any
+        console.error('Error declining workspace invitation:', error);
+      }
+    }
   };
 
   return (

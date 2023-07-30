@@ -24,6 +24,7 @@ export default function AccountWorkspacesTab() {
           name: workspace.name,
           workspaceId: workspace.id,
           isInvite: false,
+          inviteId: undefined
         };
       });
   
@@ -34,6 +35,7 @@ export default function AccountWorkspacesTab() {
           isInvite: true,
           workspaceId: invite.workspaceId,
           name: invite.workspaceName,
+          inviteId: invite.inviteId
         };
       });
   
