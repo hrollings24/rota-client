@@ -8,6 +8,12 @@ const DECLINE_INVITE_MUTATION = gql`
   }
 `;
 
+const ACCEPT_INVITE_MUTATION = gql`
+  mutation AcceptInviteRequest($inviteId: UUID!) {
+    acceptInvite(inviteId: $inviteId)
+  }
+`;
+
 export interface WorkspaceAccountCardComponentProps {
   name: string;
   workspaceId: string;
@@ -17,6 +23,8 @@ export interface WorkspaceAccountCardComponentProps {
 
 const WorkspaceCard = ({ workspace }: { workspace: WorkspaceAccountCardComponentProps }) => {
   const [declineInviteMutation, { loading: declineInviteLoading }] = useMutation(DECLINE_INVITE_MUTATION);
+  const [acceptInviteMutation, { loading: acceptInviteLoading }] = useMutation(ACCEPT_INVITE_MUTATION);
+
   const [accountData, setAccountData, refresh] = useContext(AccountContext);
 
   const handleLeaveClick = () => {
@@ -24,9 +32,23 @@ const WorkspaceCard = ({ workspace }: { workspace: WorkspaceAccountCardComponent
     console.log(`Leaving workspace: ${workspace.name}`);
   };
 
-  const handleJoinClick = () => {
-    // Add the logic to handle joining the workspace here
-    console.log(`Joining workspace: ${workspace.name}`);
+  const handleJoinClick = async () => {
+    // Add the logic to handle declining the workspace invitation here
+    if (workspace.inviteId) {
+      try {
+        await acceptInviteMutation({
+          variables: {
+            inviteId: workspace.inviteId,
+          },
+        });
+
+        refresh();
+        // Handle success or UI updates after declining the invitation
+      } catch (error) {
+        // Handle errors if any
+        console.error('Error declining workspace invitation:', error);
+      }
+    }
   };
 
   const handleDeclineClick = async () => {
