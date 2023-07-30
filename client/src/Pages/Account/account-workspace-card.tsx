@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { gql, useMutation } from "@apollo/client";
+import { AccountContext } from '../../AccountContext';
 
 const DECLINE_INVITE_MUTATION = gql`
   mutation DeclineInviteRequest($inviteId: UUID!) {
@@ -16,6 +17,7 @@ export interface WorkspaceAccountCardComponentProps {
 
 const WorkspaceCard = ({ workspace }: { workspace: WorkspaceAccountCardComponentProps }) => {
   const [declineInviteMutation, { loading: declineInviteLoading }] = useMutation(DECLINE_INVITE_MUTATION);
+  const [accountData, setAccountData, refresh] = useContext(AccountContext);
 
   const handleLeaveClick = () => {
     // Add the logic to handle leaving the workspace here
@@ -37,6 +39,8 @@ const WorkspaceCard = ({ workspace }: { workspace: WorkspaceAccountCardComponent
             inviteId: workspace.inviteId,
           },
         });
+
+        refresh();
         // Handle success or UI updates after declining the invitation
       } catch (error) {
         // Handle errors if any

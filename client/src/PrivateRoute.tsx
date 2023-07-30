@@ -7,7 +7,7 @@ import Navbar from './Components/navbar';
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { get } from 'http';
 import { Account, AccountResponseData } from './Types/Account';
-import { AccountContext, AccountContextProvider } from './AccountContext';
+import { AccountContext, AccountContextProvider, GET_ACCOUNT_QUERY } from './AccountContext';
 
 const GET_WORKSPACES_FILTER = gql`
 query {
@@ -24,33 +24,6 @@ query {
   }
 }
 `;
-
-const GET_ACCOUNT_QUERY = gql`
-query {
-  account
-  {
-    accountId,
-    username,
-    firstName,
-    surname
-    notifications{
-      id
-      title,
-      message
-    },
-    workspaces {
-      id,
-      name
-    },
-    invites {
-      inviteId,
-      workspaceId,
-      workspaceName
-    }
-  }
-}
-`;
-
 
 export interface IAuthRouteProps {
     children: any

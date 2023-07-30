@@ -120,11 +120,9 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
 
 
   const callGetShifts = () => {
-      console.log("in callGetSHifts")
       var endDate = new Date(selectedDate);
       endDate.setHours(23, 59, 59, 999); // Set time to 11:59 PM
   
-      console.log("should call")
       getShiftsForDepartment({
         variables: {
           departmentId: departmentId,
