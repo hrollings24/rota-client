@@ -8,13 +8,8 @@ import ShiftCard from "./shift.card";
 import { set } from "date-fns";
 
 export const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
-  query GetShiftsForDepartment($departmentId: UUID!, $startTime: DateTime!, $endTime: DateTime!) {
-    shiftsForDepartment(
-      request: { departmentId: $departmentId }
-      where: {
-        shiftStartTime: { gte: $startTime, lt: $endTime }
-      }
-    ) {
+  query GetShiftsForDepartment($filters: ShiftFilterInput!) {
+    shifts(filters: $filters) {
       id
       shiftStartTime
       shiftEndTime
@@ -120,21 +115,24 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
 
 
   const callGetShifts = () => {
+    if (departmentId) {
       var endDate = new Date(selectedDate);
       endDate.setHours(23, 59, 59, 999); // Set time to 11:59 PM
   
       getShiftsForDepartment({
         variables: {
-          departmentId: departmentId,
-          startTime: selectedDate.toISOString(), // Start time (midnight)
-          endTime: endDate.toISOString(), // End time (11:59 PM)
+          filters: {
+            departmentId: departmentId,
+            earliestStartDate: selectedDate.toISOString(), // Start time (midnight)
+            latestStartDate: endDate.toISOString(), // End time (11:59 PM)
+          },
         },
       });
-  }
+    }
+  };
 
   useEffect(() => {
-    if (data) {
-      console.log("gotten refreshed data")
+    if (data && data.shiftsForDepartment) {
       setShifts(mapShiftResponseToParsedShiftResponse(data.shiftsForDepartment));
     }
   }, [data]);
