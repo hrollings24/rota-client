@@ -132,8 +132,9 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
   };
 
   useEffect(() => {
-    if (data && data.shiftsForDepartment) {
-      setShifts(mapShiftResponseToParsedShiftResponse(data.shiftsForDepartment));
+    console.log(data)
+    if (data && data.shifts) {
+      setShifts(mapShiftResponseToParsedShiftResponse(data.shifts));
     }
   }, [data]);
 
