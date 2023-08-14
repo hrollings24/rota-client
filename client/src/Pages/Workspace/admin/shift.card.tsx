@@ -98,37 +98,48 @@ const ShiftCard: React.FC<CardProps> = ({ shift, workspace, refreshDepartment })
 
   return (
     <div>
-        <div className="bg-white shadow-md rounded-md p-4 mb-4 flex items-center justify-between">
-            <div>
-                <p>Start Time: {shift.shiftStartTime.toLocaleDateString() + " " + shift.shiftStartTime.toLocaleTimeString()}</p>
-                <p>End Time: {shift.shiftEndTime.toLocaleDateString() + " " + shift.shiftEndTime.toLocaleTimeString()}</p>
-                <ShiftStateText shift={shift}></ShiftStateText>
-            </div>
-            {shift.assignedUser ? (
-                <button
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
-                onClick={() => handleUnassignedShift(shift.assignedUser!.accountId)}
-                >
-                Unassign User
-                </button>
-            ) : (
-                <button
-                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
-                onClick={handleAssignUser}
-                >
-                Assign User
-                </button>
-            )}
-            </div>
-{showUserSelectorModal && (
+      <div className="bg-white shadow-md rounded-md p-4 mb-4 flex items-center justify-between">
+        <div>
+          <p className="mb-2">
+            Start Time:{" "}
+            {shift.shiftStartTime.toLocaleDateString() +
+              " " +
+              shift.shiftStartTime.toLocaleTimeString()}
+          </p>
+          <p className="mb-2">
+            End Time:{" "}
+            {shift.shiftEndTime.toLocaleDateString() +
+              " " +
+              shift.shiftEndTime.toLocaleTimeString()}
+          </p>
+          <ShiftStateText shift={shift}></ShiftStateText>
+        </div>
+        {shift.assignedUser ? (
+          <button
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
+            onClick={() => handleUnassignedShift(shift.assignedUser!.accountId)}
+          >
+            Unassign User
+          </button>
+        ) : (
+          <button
+            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+            onClick={handleAssignUser}
+          >
+            Assign User
+          </button>
+        )}
+      </div>
+      {showUserSelectorModal && (
         <WorkspaceUserSelectorModal
           users={workspace.users}
           onClose={handleCloseModal} // Pass a callback to handle modal close
           onSubmit={handleSubmitModal}
         />
-    )}    
-        </div>
+      )}
+    </div>
   );
+  
 };
 
 export default ShiftCard;

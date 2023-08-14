@@ -3,6 +3,7 @@ import { WorkspaceResponse } from "../../../Types/Workspace";
 import { auth } from "../../../firebaseSetup";
 import { useEffect, useState } from "react";
 import { ParsedShiftResponse, ShiftResponse } from "../admin/workspace.department.page";
+import ShiftView from "./shiftview.user";
 
 export const GET_SHIFTS_QUERY = gql`
   query GetShiftsForDepartment($filters: ShiftFilterInput!) {
@@ -111,56 +112,10 @@ export default function WorkspaceUserPage({ workspace }: { workspace: WorkspaceR
   };
 
   return (
-    <div className="p-8">
-      {/* Today view */}
-      <h1 className="font-bold text-white text-2xl mb-4">Today</h1>
-      {loading ? (
-        <p className="text-gray-500">Loading...</p>
-      ) : shifts.length === 0 ? (
-        <p className="text-gray-500">No shifts assigned for today.</p>
-      ) : (
-        <div>
-          {shifts.map((shift) => (
-            <div key={shift.id} className="mb-4 border-b pb-2">
-              <p className="font-semibold">Shift Start Time: {shift.shiftStartTime.toString()}</p>
-              <p className="font-semibold">Shift End Time: {shift.shiftEndTime.toString()}</p>
-              {shift.assignedUser && (
-                <>
-                  <p>Assigned User: {shift.assignedUser.firstName} {shift.assignedUser.surname}</p>
-                  <p>Assigned User Account ID: {shift.assignedUser.accountId}</p>
-                </>
-              )}
-              <p>Department ID: {shift.departmentId}</p>
-              <p>State: {shift.state}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Tomorrow view */}
-      <h1 className="font-bold text-white text-2xl mt-8 mb-4">Tomorrow</h1>
-      {loading ? (
-        <p className="text-gray-500">Loading...</p>
-      ) : tomorrowShifts.length === 0 ? (
-        <p className="text-gray-500">No shifts assigned for tomorrow.</p>
-      ) : (
-        <div>
-          {tomorrowShifts.map((shift) => (
-            <div key={shift.id} className="mb-4 border-b pb-2">
-              <p className="font-semibold">Shift Start Time: {shift.shiftStartTime.toString()}</p>
-              <p className="font-semibold">Shift End Time: {shift.shiftEndTime.toString()}</p>
-              {shift.assignedUser && (
-                <>
-                  <p>Assigned User: {shift.assignedUser.firstName} {shift.assignedUser.surname}</p>
-                  <p>Assigned User Account ID: {shift.assignedUser.accountId}</p>
-                </>
-              )}
-              <p>Department ID: {shift.departmentId}</p>
-              <p>State: {shift.state}</p>
-            </div>
-          ))}
-        </div>
-      )}
+    <div>
+      <ShiftView shifts={shifts} loading={loading} title="Today" />
+      <ShiftView shifts={tomorrowShifts} loading={loading} title="Tomorrow" />
     </div>
   );
+  
 }
