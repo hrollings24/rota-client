@@ -9,7 +9,7 @@ interface CardProps {
 const ShiftStateText: React.FC<CardProps> = ({ shift }) => {
 
     if (shift.state === ShiftState.ASSIGNED) {
-        return <p>Assigned To User: {shift.assignedUser.firstName}</p>
+        return <p>Assigned To User: {shift.assignedUser!.firstName}</p>
     }
 
     if (shift.state === ShiftState.UNASSIGNED_AND_HIDDEN) {

@@ -5,7 +5,6 @@ import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import CreateShiftModal from "./components/createshift.modal";
 import ShiftCard from "./shift.card";
-import { set } from "date-fns";
 
 export const GET_SHIFTS_FOR_DEPARTMENT_QUERY = gql`
   query GetShiftsForDepartment($filters: ShiftFilterInput!) {
@@ -50,7 +49,7 @@ export interface ParsedShiftResponse {
   departmentId: string;
   shiftStartTime: Date;
   shiftEndTime: Date;
-  assignedUser: User;
+  assignedUser: User | null;
   state: ShiftState;
 }
 
@@ -158,32 +157,50 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
     setShowModal(false);
   };
 
-  const handleCreateShift = async (shiftDate: Date | null, startTime: string, endTime: string) => {
+  const handleCreateShift = async (startTime: Date | null, endTime: Date | null) => {
+    if (!departmentId) {
+      // Handle the case where departmentId is null or undefined
+      return;
+    }
+  
     try {
-      const formattedEndTime = new Date(endTime).toISOString();
-      const formattedStartTime = new Date(startTime).toISOString();
-
-      await createShift({
+      const formattedEndTime = endTime!.toISOString();
+      const formattedStartTime = startTime!.toISOString();
+  
+      const { data: createShiftData } = await createShift({
         variables: {
           shiftEndTime: formattedEndTime,
           shiftStartTime: formattedStartTime,
           departmentId: departmentId,
-          state: ShiftState.UNASSIGNED_AND_HIDDEN
+          state: ShiftState.UNASSIGNED_AND_HIDDEN,
         },
         context: {
           headers: {
-            WorkspaceId: workspace.workspace.id
-          }
-        }
+            WorkspaceId: workspace.workspace.id,
+          },
+        },
       });
-
+  
+      const newShift: ParsedShiftResponse = {
+        id: createShiftData.createShift.id, // Assuming the ID is returned in the mutation
+        departmentId: departmentId,
+        shiftStartTime: new Date(formattedStartTime),
+        shiftEndTime: new Date(formattedEndTime),
+        assignedUser: null, // Set this as per your requirements
+        state: ShiftState.UNASSIGNED_AND_HIDDEN,
+      };
+  
+      setShifts([...shifts, newShift]); // Appending the new shift to the existing shifts
+  
       // Handle success scenario
     } catch (error) {
       // Handle error scenario
     }
-
+  
     closeModal();
   };
+  
+  
 
   return (
     <div style={{ padding: "20px" }}>
@@ -229,7 +246,7 @@ export const DepartmentAdminPage: React.FC<{ workspace: WorkspaceResponse }> = (
           ))}
         </div>
       )}
-      <CreateShiftModal showModal={showModal} onCloseModal={closeModal} onCreateShift={handleCreateShift} />
+      <CreateShiftModal showModal={showModal} currentDate={selectedDate} onCloseModal={closeModal} onCreateShift={handleCreateShift} />
     </div>
   );
 };

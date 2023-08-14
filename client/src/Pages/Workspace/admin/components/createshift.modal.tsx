@@ -1,36 +1,32 @@
-import React, { useState } from "react";
-import DatePickerComponent from "../../../../Components/datepicker.component";
+import React, { useState } from 'react';
 
 interface CreateShiftModalProps {
   showModal: boolean;
+  currentDate: Date;
   onCloseModal: () => void;
-  onCreateShift: (shiftDate: Date | null, startTime: string, endTime: string) => void;
+  onCreateShift: (startTime: Date | null, endTime: Date | null) => void;
 }
 
-const CreateShiftModal: React.FC<CreateShiftModalProps> = ({
-  showModal,
-  onCloseModal,
-  onCreateShift
-}) => {
-  const [shiftDate, setShiftDate] = useState<Date | null>(null);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-
-  const handleShiftDateChange = (date: Date | null) => {
-    setShiftDate(date);
-  };
-
-  const handleStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setStartTime(event.target.value);
-  };
-
-  const handleEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEndTime(event.target.value);
-  };
+const CreateShiftModal: React.FC<CreateShiftModalProps> = ({ showModal, currentDate, onCloseModal, onCreateShift }) => {
+  const [startTime, setStartTime] = useState<string>('');
+  const [endTime, setEndTime] = useState<string>('');
 
   const handleCreateShift = () => {
-    onCreateShift(shiftDate, startTime, endTime);
+    const createDateTime = (timeString: string, addDay = false) => {
+      const newDate = new Date(currentDate);
+      if (addDay) {
+        newDate.setDate(newDate.getDate() + 1);
+      }
+      const [hours, minutes] = timeString.split(':').map(Number);
+      newDate.setHours(hours, minutes);
+      return newDate;
+    };
+  
+    const start = startTime ? createDateTime(startTime) : null;
+    const end = startTime && endTime && endTime < startTime ? createDateTime(endTime, true) : createDateTime(endTime);
+    onCreateShift(start, end);
   };
+  
 
   return (
     <div>
@@ -40,24 +36,15 @@ const CreateShiftModal: React.FC<CreateShiftModalProps> = ({
           <div className="relative bg-white w-1/2 p-4 rounded-md">
             <h2 className="text-lg font-bold mb-4">Create Shift</h2>
             <div className="mb-4">
-              <label htmlFor="shift-date" className="block mb-1">
-                Date:
-              </label>
-              <DatePickerComponent
-                selectedDate={shiftDate}
-                setSelectedDate={handleShiftDateChange}
-              />
-            </div>
-            <div className="mb-4">
               <label htmlFor="start-time" className="block mb-1">
                 Start Time:
               </label>
               <input
-                type="text"
+                type="time"
                 id="start-time"
+                className="px-2 py-1 border rounded-md"
                 value={startTime}
-                onChange={handleStartTimeChange}
-                className="border border-gray-300 rounded-md p-2"
+                onChange={(e) => setStartTime(e.target.value)}
               />
             </div>
             <div className="mb-4">
@@ -65,11 +52,11 @@ const CreateShiftModal: React.FC<CreateShiftModalProps> = ({
                 End Time:
               </label>
               <input
-                type="text"
+                type="time"
                 id="end-time"
+                className="px-2 py-1 border rounded-md"
                 value={endTime}
-                onChange={handleEndTimeChange}
-                className="border border-gray-300 rounded-md p-2"
+                onChange={(e) => setEndTime(e.target.value)}
               />
             </div>
             <div className="flex justify-end">
@@ -92,6 +79,5 @@ const CreateShiftModal: React.FC<CreateShiftModalProps> = ({
     </div>
   );
 };
-
 
 export default CreateShiftModal;
