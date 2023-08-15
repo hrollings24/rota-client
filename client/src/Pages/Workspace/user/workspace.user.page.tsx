@@ -113,8 +113,8 @@ export default function WorkspaceUserPage({ workspace }: { workspace: WorkspaceR
 
   return (
     <div>
-      <ShiftView shifts={shifts} loading={loading} title="Today" />
-      <ShiftView shifts={tomorrowShifts} loading={loading} title="Tomorrow" />
+      <ShiftView shifts={shifts} loading={loading} title="Today" workspaceId={workspace.workspace.id} />
+      <ShiftView shifts={tomorrowShifts} loading={loading} title="Tomorrow" workspaceId={workspace.workspace.id}/>
     </div>
   );
   
