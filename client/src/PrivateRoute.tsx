@@ -15,7 +15,9 @@ query {
     id,
     users {
       accountId,
-      username
+      username,
+      userState,
+      managerWorkspaceUserId
     },
     departments {
       id,

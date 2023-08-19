@@ -64,6 +64,11 @@ export default function UserTableComponent(workspace: WorkspaceResponse)
         const department = workspace.workspace.departments.find((dept) => dept.id === departmentId);
         return department ? department.name : "--";
       };
+
+      const getUserManagerName = (managerUserId: string): string => {
+        const manager = workspace.workspace.users.find((user) => user.workspaceUserId === managerUserId);
+        return manager ? manager.firstName : "--";
+      };
     
       const renderDepartmentButton = (user: User) => {
         return (
@@ -93,6 +98,7 @@ export default function UserTableComponent(workspace: WorkspaceResponse)
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Name</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Role</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Department</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Manager</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -102,6 +108,7 @@ export default function UserTableComponent(workspace: WorkspaceResponse)
                 <td className="px-6 py-4 whitespace-nowrap">{user.firstName + " " + user.surname}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{getDepartmentName(user.departmentId)}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{getUserManagerName(user.managerWorkspaceUserId)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-right">
                   <button
                     className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none mr-2"

@@ -10,7 +10,10 @@ query {
       role,
       firstName,
       surname,
-      departmentId
+      departmentId,
+      userState,
+      managerWorkspaceUserId,
+      workspaceUserId
     },
     departments {
       id,
@@ -37,6 +40,9 @@ export interface User {
     surname: string;
     role: string;
     departmentId: string;
+    userState: string,
+    managerWorkspaceUserId: string;
+    workspaceUserId: string
 }
 
 export interface Department {
