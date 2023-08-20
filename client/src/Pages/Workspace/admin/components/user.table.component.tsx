@@ -2,6 +2,7 @@ import { useState } from "react";
 import { GET_WORKSPACES_FILTER, User, Workspace, WorkspaceResponse } from "../../../../Types/Workspace";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { Modal } from "../workspace.modal";
+import WorkspaceUserSelectorModal from "../../../../Components/workspace-user-selector-modal";
 
 const ADD_USER_TO_DEPARTMENT = gql`
   mutation AddUserToDepartment($accountId: String!, $departmentId: UUID!) {
@@ -11,11 +12,28 @@ const ADD_USER_TO_DEPARTMENT = gql`
   }
 `;
 
+const ASSIGN_MANAGER = gql`
+  mutation AssignManager($workspaceUserId: String!, $managerWorkspaceUserId: String!) {
+    assignManager(request: { workspaceUserId: $workspaceUserId, managerWorkspaceUserId: $managerWorkspaceUserId })
+  }
+`;
+
+
 export default function UserTableComponent(workspace: WorkspaceResponse)
 {
     const [showModal, setShowModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [addUserToDepartment, { loading: addUserToDepartmentLoading }] = useMutation(ADD_USER_TO_DEPARTMENT);
+    const [showManagerSelectorModal, setShowManagerSelectorModal] = useState<boolean>(false);
+
+
+    const [assignManagerMutation] = useMutation(ASSIGN_MANAGER, {
+      context: {
+        headers: {
+          WorkspaceId: workspace.workspace.id,
+        },
+      },
+    });
 
     const { loading: workspaceQueryLoading, refetch: workspaceQueryRefetch } = useQuery(GET_WORKSPACES_FILTER, {
         context: {
@@ -49,8 +67,18 @@ export default function UserTableComponent(workspace: WorkspaceResponse)
         }
       };
 
+      const handleCloseManagerModal = () => {
+        setShowManagerSelectorModal(false);
+      };
 
     const handleChangeRole = (user: User) => {
+        // Handle change role button click
+        // You can implement the logic to update the user's role here
+      };
+
+      const handleChangeManager = (user: User) => {
+        setSelectedUser(user);
+        setShowManagerSelectorModal(true)
         // Handle change role button click
         // You can implement the logic to update the user's role here
       };
@@ -81,10 +109,41 @@ export default function UserTableComponent(workspace: WorkspaceResponse)
         );
       };
 
+const handleSubmitManager = async (managerId: string) => {
+    try {
+      if (selectedUser) {
+
+        var managerUser = workspace.workspace.users.filter((user) => user.accountId === managerId)[0]
+        await assignManagerMutation({
+          variables: {
+            workspaceUserId: selectedUser.workspaceUserId,
+            managerWorkspaceUserId: managerUser.workspaceUserId
+          },
+          context: {
+            headers: {
+              WorkspaceId: workspace.workspace.id,
+            },
+          },
+        });
+
+        // Close the modal after successful assignment (optional)
+        setSelectedUser(null);
+        handleCloseManagerModal();
+
+        // Refetch the data after the mutation is completed
+        workspaceQueryRefetch();
+      }
+    } catch (error) {
+      // Handle any errors that occur during the mutation
+      console.error('Error assigning manager to user:', error);
+      // Optionally, show an error message to the user
+    }
+  };
+
       
     return (
         <div>
-                    {showModal && (
+        {showModal && (
         <Modal
           onClose={() => setShowModal(false)}
           departments={workspace.workspace.departments}
@@ -110,6 +169,12 @@ export default function UserTableComponent(workspace: WorkspaceResponse)
                 <td className="px-6 py-4 whitespace-nowrap">{getDepartmentName(user.departmentId)}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{getUserManagerName(user.managerWorkspaceUserId)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-right">
+                <button
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none mr-2"
+                    onClick={() => handleChangeManager(user)}
+                  >
+                    Change Manager
+                  </button>
                   <button
                     className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none mr-2"
                     onClick={() => handleChangeRole(user)}
@@ -131,6 +196,13 @@ export default function UserTableComponent(workspace: WorkspaceResponse)
           </tbody>
         </table>
       </div>
+      {showManagerSelectorModal && (
+        <WorkspaceUserSelectorModal
+          users={workspace.workspace.users.filter((user) => user.role === "ADMIN" || user.role === "MANAGER")}
+          onClose={handleCloseManagerModal}
+          onSubmit={handleSubmitManager}
+        />
+      )}
       </div>
     )
 }
